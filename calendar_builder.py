@@ -202,7 +202,6 @@ def build_calendar_html(events, bookings, week_start=None, week_end=None,
             <div class="day-header">
                 <div class="day-name">{day_name}</div>
                 <div class="day-date">{day_date}</div>
-                <div class="day-count">{len(items)} event{"s" if len(items) != 1 else ""}</div>
             </div>
             <div class="day-body">
                 {items_html}
