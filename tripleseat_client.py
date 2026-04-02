@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 API_BASE = "https://api.tripleseat.com/v1"
 RATE_LIMIT_PER_SECOND = 10
 REQUEST_INTERVAL = 1.0 / RATE_LIMIT_PER_SECOND  # 0.1s between requests
+DEFAULT_PAGE_SIZE = 25  # Tripleseat default page size
 
 
 class TripleseatClient:
@@ -119,7 +120,7 @@ class TripleseatClient:
             logger.info(f"Page {page}: fetched {len(results)} records")
 
             # If we got fewer results than expected, we're on the last page
-            if len(results) < 25:  # Tripleseat default page size
+            if len(results) < DEFAULT_PAGE_SIZE:
                 break
 
             page += 1

@@ -99,11 +99,16 @@ def group_by_day(items, week_start, week_end):
     return days
 
 
+def _no_pad(dt, fmt):
+    """Cross-platform strftime that removes leading zeros (works on Windows too)."""
+    return dt.strftime(fmt.replace("-", "#") if __import__("os").name == "nt" else fmt)
+
+
 def format_time(dt):
     """Format a datetime as a friendly time string."""
     if dt is None:
         return ""
-    return dt.strftime("%-I:%M %p").lower()
+    return _no_pad(dt, "%-I:%M %p").lower()
 
 
 def build_calendar_html(events, bookings, week_start=None, week_end=None,
@@ -141,7 +146,7 @@ def build_calendar_html(events, bookings, week_start=None, week_end=None,
     for i in range(7):
         day_key = current.strftime("%Y-%m-%d")
         day_name = current.strftime("%A")
-        day_date = current.strftime("%b %-d")
+        day_date = _no_pad(current, "%b %-d")
         items = grouped.get(day_key, [])
         total_count += len(items)
 
@@ -206,8 +211,8 @@ def build_calendar_html(events, bookings, week_start=None, week_end=None,
 
         current += timedelta(days=1)
 
-    week_label = f"{week_start.strftime('%B %-d')} – {week_end.strftime('%B %-d, %Y')}"
-    generated = datetime.now().strftime("%B %-d, %Y at %-I:%M %p")
+    week_label = f"{_no_pad(week_start, '%B %-d')} – {_no_pad(week_end, '%B %-d, %Y')}"
+    generated = _no_pad(datetime.now(), "%B %-d, %Y at %-I:%M %p")
 
     return f"""<!DOCTYPE html>
 <html lang="en">

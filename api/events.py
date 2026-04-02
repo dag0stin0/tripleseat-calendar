@@ -5,12 +5,19 @@ Query params: ?start=YYYY-MM-DD&end=YYYY-MM-DD
 """
 
 import os
+import re
+import sys
 import json
 import time
 import logging
+import threading
 from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
+
+# Allow imports from the project root (one level up from api/)
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from normalize import normalize
 
 logger = logging.getLogger(__name__)
 
@@ -20,16 +27,18 @@ API_BASE = "https://api.tripleseat.com/v1"
 RATE_LIMIT_INTERVAL = 0.1
 
 _last_request_time = 0
+_rate_limit_lock = threading.Lock()
 
 
 def ts_request(session, endpoint, params=None):
     """Make a rate-limited GET request to Tripleseat."""
     global _last_request_time
-    now = time.time()
-    elapsed = now - _last_request_time
-    if elapsed < RATE_LIMIT_INTERVAL:
-        time.sleep(RATE_LIMIT_INTERVAL - elapsed)
-    _last_request_time = time.time()
+    with _rate_limit_lock:
+        now = time.time()
+        elapsed = now - _last_request_time
+        if elapsed < RATE_LIMIT_INTERVAL:
+            time.sleep(RATE_LIMIT_INTERVAL - elapsed)
+        _last_request_time = time.time()
 
     url = f"{API_BASE}{endpoint}.json"
     params = params or {}
@@ -48,11 +57,15 @@ def ts_request(session, endpoint, params=None):
     return resp.json()
 
 
+TRIPLESEAT_PAGE_SIZE = 25
+
+
 def ts_fetch_all(session, endpoint, params=None, max_pages=50):
     """Paginate through a Tripleseat endpoint."""
     params = params or {}
     all_results = []
     page = 1
+    page_size = TRIPLESEAT_PAGE_SIZE
 
     while page <= max_pages:
         params["page"] = page
@@ -73,7 +86,7 @@ def ts_fetch_all(session, endpoint, params=None, max_pages=50):
             break
 
         all_results.extend(results)
-        if len(results) < 25:
+        if len(results) < page_size:
             break
         page += 1
 
@@ -87,38 +100,6 @@ def get_session():
         client_key=os.environ.get("TRIPLESEAT_CONSUMER_KEY", ""),
         client_secret=os.environ.get("TRIPLESEAT_CONSUMER_SECRET", ""),
     )
-
-
-# ── Normalization ───────────────────────────────────────────
-
-def normalize(raw, kind="event"):
-    r = raw.get(kind, raw)
-    if kind == "event":
-        return {
-            "id": r.get("id"),
-            "type": "event",
-            "name": r.get("name") or r.get("event_name") or "Untitled Event",
-            "status": (r.get("status") or r.get("event_status") or "").lower(),
-            "start": r.get("event_start") or r.get("start_date") or r.get("event_date") or "",
-            "end": r.get("event_end") or r.get("end_date") or "",
-            "location": r.get("location_name") or r.get("location") or "",
-            "room": r.get("room_name") or r.get("room") or "",
-            "contact": r.get("contact_name") or "",
-            "guest_count": r.get("guest_count") or r.get("guests") or 0,
-        }
-    else:
-        return {
-            "id": r.get("id"),
-            "type": "booking",
-            "name": r.get("name") or r.get("booking_name") or "Untitled Booking",
-            "status": (r.get("status") or r.get("booking_status") or "").lower(),
-            "start": r.get("start") or r.get("start_date") or r.get("booking_start") or "",
-            "end": r.get("end") or r.get("end_date") or r.get("booking_end") or "",
-            "location": r.get("location_name") or r.get("location") or "",
-            "room": r.get("room_name") or r.get("room") or "",
-            "contact": r.get("contact_name") or "",
-            "guest_count": r.get("guest_count") or r.get("guests") or 0,
-        }
 
 
 # ── Demo Data ───────────────────────────────────────────────
@@ -172,10 +153,31 @@ def generate_demo_data():
 # ── Handler ─────────────────────────────────────────────────
 
 class handler(BaseHTTPRequestHandler):
+    @staticmethod
+    def _valid_date(s):
+        """Return True if s is a valid YYYY-MM-DD string."""
+        return bool(s and re.fullmatch(r"\d{4}-\d{2}-\d{2}", s))
+
     def do_GET(self):
         qs = parse_qs(urlparse(self.path).query)
         start_str = qs.get("start", [None])[0]
         end_str = qs.get("end", [None])[0]
+
+        # Validate date format
+        if start_str and not self._valid_date(start_str):
+            self.send_response(400)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": "Invalid start date. Use YYYY-MM-DD format."}).encode())
+            return
+        if end_str and not self._valid_date(end_str):
+            self.send_response(400)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": "Invalid end date. Use YYYY-MM-DD format."}).encode())
+            return
 
         consumer_key = os.environ.get("TRIPLESEAT_CONSUMER_KEY", "")
         consumer_secret = os.environ.get("TRIPLESEAT_CONSUMER_SECRET", "")
