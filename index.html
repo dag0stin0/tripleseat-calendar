@@ -496,7 +496,7 @@ function renderCalendar(items) {
         html += '<div class="day-head">';
         html += '<div class="dname">' + dayNames[i] + '</div>';
         html += '<div class="ddate">' + d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + '</div>';
-        html += '<div class="dcount">' + dayItems.length + ' event' + (dayItems.length !== 1 ? 's' : '') + '</div>';
+        // day count removed
         html += '</div><div class="day-body">';
 
         if (dayItems.length === 0) {
