@@ -294,12 +294,6 @@ select.filter-btn {
     margin-bottom: 2px;
 }
 
-.loc-pip {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--blue); flex-shrink: 0;
-}
-.loc-pip.dc { background: var(--red); }
-
 .ev-name {
     font-size: 11px; font-weight: 600;
     line-height: 1.3; letter-spacing: -0.1px;
@@ -379,9 +373,18 @@ select.filter-btn {
     overflow: hidden;
     margin-bottom: 48px;
     background: var(--surface);
-    content-visibility: auto;
-    contain-intrinsic-size: auto 500px;
+    max-height: 520px;
+    display: flex;
+    flex-direction: column;
 }
+.table-scroll {
+    overflow-y: auto;
+    flex: 1;
+}
+.table-scroll::-webkit-scrollbar { width: 4px; }
+.table-scroll::-webkit-scrollbar-track { background: transparent; }
+.table-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.table-scroll::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
 
 .table-wrap table {
     width: 100%; border-collapse: collapse;
@@ -403,6 +406,7 @@ select.filter-btn {
     color: var(--text-tertiary);
     background: var(--surface-raised);
     border-bottom: 1px solid var(--border-light);
+    position: sticky; top: 0; z-index: 2;
 }
 
 .table-wrap td {
@@ -730,8 +734,8 @@ select.filter-btn {
 @media (max-width: 960px) {
     .day-col { min-height: 160px; }
     .ev-top .status-dot { display: none; }
-    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .table-wrap table { min-width: 680px; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .table-scroll table { min-width: 680px; }
 }
 
 /* ═══════════════════════════════════════════
@@ -866,20 +870,22 @@ select.filter-btn {
         <span class="section-count" id="upcomingCount"></span>
     </div>
     <div class="table-wrap">
-        <table>
-            <colgroup>
-                <col class="c-date"><col class="c-time"><col class="c-event">
-                <col class="c-status"><col class="c-loc"><col class="c-room">
-                <col class="c-contact">
-            </colgroup>
-            <thead>
-                <tr>
-                    <th>Date</th><th>Time</th><th>Event</th>
-                    <th>Status</th><th>Loc</th><th>Room</th><th>Contact</th>
-                </tr>
-            </thead>
-            <tbody id="upcomingBody"></tbody>
-        </table>
+        <div class="table-scroll">
+            <table>
+                <colgroup>
+                    <col class="c-date"><col class="c-time"><col class="c-event">
+                    <col class="c-status"><col class="c-loc"><col class="c-room">
+                    <col class="c-contact">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Date</th><th>Time</th><th>Event</th>
+                        <th>Status</th><th>Loc</th><th>Room</th><th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody id="upcomingBody"></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Rooms -->
@@ -1094,7 +1100,6 @@ function renderCalendar(items, range) {
                 parts.push(
                     '<div class="ev', isDC ? ' dc' : '', '">',
                     '<div class="ev-top">',
-                    '<span class="loc-pip', isDC ? ' dc' : '', '"></span>',
                     '<span class="status-dot ', sc, '"></span>',
                     '<span class="ev-name">', esc(item.name), '</span>',
                     '</div>',
