@@ -3,327 +3,605 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tripleseat — Team Dashboard</title>
+<title>PubKey — Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" media="print" onload="this.media='all'">
 <style>
+
 :root {
-    --bg: #f0f2f5;
-    --surface: #ffffff;
-    --text: #1a1a2e;
-    --text-secondary: #64748b;
-    --border: #e2e8f0;
-    --accent: #4361ee;
-    --accent-light: #e8edff;
-    --green: #22c55e;
-    --green-light: #dcfce7;
-    --yellow: #eab308;
-    --yellow-light: #fef9c3;
-    --red: #ef4444;
-    --red-light: #fee2e2;
-    --teal: #14b8a6;
-    --teal-light: #ccfbf1;
-    --purple: #8b5cf6;
-    --purple-light: #ede9fe;
-    --radius: 12px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --surface-raised: #1c1c1f;
+    --surface-hover: #222226;
+    --text: #e5e5ea;
+    --text-secondary: #a8a8b0;
+    --text-tertiary: #737378;
+    --today-bg: #1a1810;
+    --shadow-card: rgba(0, 0, 0, 0.3);
+    --border: #2c2c2e;
+    --border-light: #1f1f22;
+    --orange: #f59e0b;
+    --orange-dim: rgba(245, 158, 11, 0.10);
+    --green: #34d399;
+    --green-dim: rgba(52, 211, 153, 0.12);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251, 191, 36, 0.10);
+    --red: #f472b6;
+    --red-dim: rgba(244, 114, 182, 0.10);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167, 139, 250, 0.10);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96, 165, 250, 0.10);
+    --ease: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Space Grotesk', -apple-system, system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
 }
 
+/* ---- Topbar ---- */
 .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 32px;
+    border-bottom: 1px solid var(--border-light);
+    padding: 0 clamp(20px, 4vw, 48px);
+    height: 52px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: var(--shadow);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    background: rgba(12, 12, 14, 0.85);
 }
 
-.topbar-left { display: flex; align-items: center; gap: 16px; }
-
-.topbar h1 { font-size: 20px; font-weight: 700; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.logo-img { height: 24px; width: auto; filter: invert(1); opacity: 0.85; }
 
 .topbar .badge {
-    font-size: 11px; font-weight: 600; padding: 3px 10px;
-    border-radius: 20px; background: var(--accent-light); color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500; padding: 2px 7px;
+    border-radius: 4px; background: var(--orange-dim); color: var(--orange);
+    letter-spacing: 0.3px;
 }
 
-.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-right { display: flex; align-items: center; gap: 6px; }
 
-.topbar-right select, .topbar-right button {
-    font-size: 13px; padding: 8px 14px; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--surface);
-    color: var(--text); cursor: pointer; font-family: inherit;
+.topbar-right select {
+    font-size: 12px; padding: 5px 28px 5px 10px; border-radius: 6px;
+    border: 1px solid var(--border-light); background: var(--surface);
+    color: var(--text-secondary); cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: all 0.2s var(--ease);
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='8' height='5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2348484a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+}
+.topbar-right select:hover { border-color: var(--border); color: var(--text); }
+.topbar-right select:focus { outline: none; box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15); border-color: var(--blue); }
+
+.refresh-indicator {
+    font-size: 10px; color: var(--text-tertiary);
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: 2px;
 }
 
-.topbar-right button {
-    background: var(--accent); color: #fff; border: none; font-weight: 600;
-}
-.topbar-right button:hover { opacity: 0.9; }
+/* ---- Main ---- */
+.main { max-width: 1380px; margin: 0 auto; padding: 32px clamp(20px, 4vw, 48px) 64px; }
 
-.refresh-indicator { font-size: 11px; color: var(--text-secondary); }
-
-.main { max-width: 1440px; margin: 0 auto; padding: 24px 32px; }
-
-/* Stats */
+/* ---- Stats Row ---- */
 .stats-row {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px; margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-bottom: 32px;
 }
 
 .stat-card {
-    background: var(--surface); border-radius: var(--radius);
-    padding: 20px 24px; box-shadow: var(--shadow);
-    display: flex; flex-direction: column; gap: 4px;
+    background: var(--surface);
+    padding: 20px 22px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    display: flex; flex-direction: column; gap: 0;
+    transition: border-color 0.2s;
 }
+.stat-card:hover { border-color: var(--border); }
 
 .stat-card .label {
-    font-size: 12px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.5px; color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--text-tertiary);
+    margin-bottom: 8px;
 }
+.stat-card .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px; font-weight: 500; color: var(--text);
+    letter-spacing: -2px; line-height: 1;
+    margin-bottom: 4px;
+}
+.stat-card .sub {
+    font-size: 12px; color: var(--text-tertiary);
+    letter-spacing: 0.1px;
+}
+.stat-card.accent-orange .value { color: var(--orange); }
+.stat-card.accent-blue .value { color: var(--blue); }
+.stat-card.accent-red .value { color: var(--red); }
 
-.stat-card .value { font-size: 32px; font-weight: 700; line-height: 1.1; }
-.stat-card .sub { font-size: 12px; color: var(--text-secondary); }
-.stat-card.accent .value { color: var(--accent); }
-.stat-card.green .value { color: var(--green); }
-.stat-card.yellow .value { color: var(--yellow); }
-.stat-card.teal .value { color: var(--teal); }
-.stat-card.purple .value { color: var(--purple); }
-
-/* Week Nav */
+/* ---- Week Nav ---- */
 .week-nav {
-    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 6px; margin-bottom: 16px;
 }
 
-.week-nav button {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 16px; font-size: 13px;
-    font-weight: 600; cursor: pointer; color: var(--text); font-family: inherit;
+.week-nav .nav-btn {
+    background: var(--surface); border: 1px solid var(--border-light);
+    border-radius: 8px; width: 34px; height: 34px; font-size: 14px;
+    cursor: pointer; color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s var(--ease);
+    font-family: system-ui;
 }
-.week-nav button:hover { border-color: var(--accent); color: var(--accent); }
+.week-nav .nav-btn:hover { border-color: var(--border); color: var(--text); background: var(--surface-raised); }
+.week-nav .nav-btn:active { transform: scale(0.95); }
 
-.week-nav .week-label { font-size: 16px; font-weight: 600; }
+.week-nav .week-label {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    padding: 0 8px;
+    letter-spacing: -0.3px;
+}
 
 .week-nav .today-btn {
-    font-size: 12px; color: var(--accent); cursor: pointer;
-    font-weight: 600; background: none; border: none; padding: 0;
+    font-size: 12px; color: var(--blue); cursor: pointer;
+    font-weight: 500; background: none; border: none; padding: 0 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: opacity 0.15s;
+    margin-left: 2px;
 }
-.week-nav .today-btn:hover { text-decoration: underline; }
+.week-nav .today-btn:hover { opacity: 0.6; }
 
-/* Calendar */
+/* ---- Focus Visible ---- */
+.nav-btn:focus-visible,
+.today-btn:focus-visible,
+.topbar-right select:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+}
+.topbar-right select:focus-visible { box-shadow: none; }
+
+/* ---- Visually Hidden ---- */
+.sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ---- Table alignment classes ---- */
+.text-right { text-align: right; }
+.empty-table-cell {
+    text-align: center; color: var(--text-tertiary);
+    padding: 32px; font-size: 12px;
+}
+
+/* ---- Calendar Grid ---- */
 .calendar {
     display: grid; grid-template-columns: repeat(7, 1fr);
-    gap: 12px; margin-bottom: 32px;
+    gap: 0; margin-bottom: 40px;
+    border: 1px solid var(--border-light); border-radius: 12px; overflow: hidden;
 }
 
 .day-col {
-    background: var(--surface); border-radius: var(--radius);
-    box-shadow: var(--shadow); min-height: 280px;
-    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--surface);
+    min-height: 220px; display: flex; flex-direction: column;
+    contain: content;
+    border-right: 1px solid var(--border-light);
+    min-width: 0;
+    overflow: hidden;
 }
+.day-col:last-child { border-right: none; }
 
-.day-col.today { box-shadow: 0 0 0 2px var(--accent), var(--shadow-md); }
+.day-col.today { background: var(--today-bg); }
 
 .day-head {
-    padding: 14px 14px 10px; border-bottom: 1px solid var(--border);
-    background: #fafbfc;
+    padding: 10px 10px 8px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: flex-start;
 }
 
-.day-col.today .day-head { background: var(--accent); border-bottom-color: var(--accent); }
+.day-col.today .day-head {
+    background: var(--orange);
+    border-bottom-color: var(--orange);
+}
 .day-col.today .day-head * { color: #fff !important; }
 
+.day-head-left {}
 .day-head .dname {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.8px; color: var(--text-secondary);
+    font-size: 10px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.6px; color: var(--text-tertiary);
 }
-.day-head .ddate { font-size: 20px; font-weight: 700; margin-top: 2px; }
-.day-head .dcount { font-size: 11px; color: #aaa; margin-top: 2px; }
+.day-head .ddate {
+    font-size: 20px; font-weight: 600; margin-top: 0;
+    letter-spacing: -0.5px; line-height: 1.2;
+}
+
+.day-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    color: var(--text-tertiary);
+    background: var(--surface-raised);
+    padding: 1px 6px; border-radius: 10px;
+    margin-top: 2px;
+}
+.day-col.today .day-count { background: rgba(255,255,255,0.2); }
 
 .day-body {
-    padding: 10px; flex: 1; display: flex; flex-direction: column;
-    gap: 8px; overflow-y: auto;
+    padding: 5px; flex: 1; display: flex; flex-direction: column;
+    gap: 3px; overflow-y: auto;
 }
+
+.day-body::-webkit-scrollbar { width: 2px; }
+.day-body::-webkit-scrollbar-track { background: transparent; }
+.day-body::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
 
 .day-body .empty {
-    color: #ccc; font-size: 13px; text-align: center;
-    padding: 20px 0; font-style: italic;
+    color: var(--text-tertiary); font-size: 11px; text-align: center;
+    padding: 48px 8px; font-weight: 400; line-height: 1.5;
+    opacity: 0.4;
 }
 
-/* Event Cards */
+/* ---- Empty Week ---- */
+.empty-week {
+    grid-column: 1 / -1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 48px 20px;
+    color: var(--text-tertiary);
+    text-align: center;
+    background: var(--surface);
+}
+.empty-week img {
+    width: 120px; height: 120px; object-fit: contain;
+    opacity: 0.12; margin-bottom: 16px;
+    filter: grayscale(1) invert(1);
+}
+.empty-week .empty-text {
+    font-size: 13px; font-weight: 500; margin-bottom: 4px;
+    color: var(--text-secondary);
+}
+.empty-week .empty-sub {
+    font-size: 11px; color: var(--text-tertiary);
+}
+
+/* ---- Event Cards ---- */
 .ev-card {
-    padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--accent);
-    background: var(--accent-light); font-size: 13px; transition: transform 0.1s;
+    padding: 7px 9px; border-radius: 6px;
+    border-left: 2.5px solid var(--blue);
+    background: var(--blue-dim); font-size: 12px;
+    transition: transform 0.15s var(--ease), box-shadow 0.15s;
+    cursor: default;
 }
-.ev-card:hover { transform: translateY(-1px); }
-.ev-card.booking { border-left-color: var(--teal); background: var(--teal-light); }
-
-.ev-card .ev-badges { display: flex; gap: 5px; align-items: center; margin-bottom: 4px; }
-
-.ev-card .type-tag {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.5px; padding: 2px 6px; border-radius: 4px;
+.ev-card:hover {
+    transform: translateY(-1px);
 }
-.ev-card .type-tag.event { background: var(--accent-light); color: var(--accent); }
-.ev-card .type-tag.booking { background: var(--teal-light); color: #0d9488; }
+
+.ev-card.dc { border-left-color: var(--red); background: var(--red-dim); }
+
+.ev-card .ev-badges {
+    display: flex; gap: 3px; align-items: center; margin-bottom: 2px;
+}
+
+.loc-tag {
+    font-size: 9px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.4px; padding: 1px 5px; border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+}
+.loc-tag.nyc { background: var(--blue-dim); color: var(--blue); }
+.loc-tag.dc { background: var(--red-dim); color: var(--red); }
 
 .status-tag {
-    font-size: 10px; font-weight: 600; padding: 2px 6px;
-    border-radius: 4px; background: #f0f0f0; color: #666;
+    font-size: 9px; font-weight: 500; padding: 1px 5px;
+    border-radius: 3px; background: var(--surface-raised); color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.3px;
 }
-.status-tag.confirmed, .status-tag.definite { background: var(--green-light); color: #166534; }
-.status-tag.tentative, .status-tag.prospect { background: var(--yellow-light); color: #854d0e; }
-.status-tag.cancelled, .status-tag.closed-lost { background: var(--red-light); color: #991b1b; text-decoration: line-through; }
+.status-tag.definite { background: var(--green-dim); color: var(--green); }
+.status-tag.tentative { background: var(--yellow-dim); color: var(--yellow); }
+.status-tag.prospect { background: var(--purple-dim); color: var(--purple); }
+.status-tag.closed { opacity: 0.5; }
 
-.ev-card .ev-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-.ev-card .ev-time { color: var(--text-secondary); font-size: 12px; margin-bottom: 3px; }
-.ev-card .ev-meta { font-size: 12px; color: #777; margin-top: 2px; }
+.ev-card .ev-name {
+    font-weight: 600; font-size: 12px; margin-bottom: 1px;
+    line-height: 1.3; letter-spacing: -0.1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ev-card .ev-time {
+    color: var(--text-secondary); font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+}
+.ev-card .ev-meta {
+    font-size: 10px; color: var(--text-tertiary); margin-top: 1px;
+}
 
-/* Table */
-.section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+/* ---- Section ---- */
+.section-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 10px;
+}
+.section-title {
+    font-size: 11px; font-weight: 600; margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-tertiary); text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+.section-count {
+    font-size: 11px; color: var(--text-tertiary);
+    font-family: 'JetBrains Mono', monospace;
+}
 
+/* ---- Table ---- */
 .table-wrap {
-    background: var(--surface); border-radius: var(--radius);
-    box-shadow: var(--shadow); overflow: hidden; margin-bottom: 32px;
+    background: var(--surface); border-radius: 12px;
+    border: 1px solid var(--border-light);
+    overflow: hidden; margin-bottom: 40px;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
 }
 
-.table-wrap table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table-wrap table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+.table-wrap col.col-date { width: 12%; }
+.table-wrap col.col-time { width: 14%; }
+.table-wrap col.col-event { width: 22%; }
+.table-wrap col.col-status { width: 9%; }
+.table-wrap col.col-loc { width: 7%; }
+.table-wrap col.col-room { width: 16%; }
+.table-wrap col.col-contact { width: 13%; }
+.table-wrap col.col-guests { width: 7%; }
 
 .table-wrap th {
-    text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary);
-    background: #fafbfc; border-bottom: 1px solid var(--border);
+    text-align: left; padding: 10px 16px; font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-tertiary);
+    background: var(--surface-raised); border-bottom: 1px solid var(--border-light);
+    font-family: 'JetBrains Mono', monospace;
 }
 
 .table-wrap td {
-    padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle;
+    padding: 11px 16px; border-bottom: 1px solid var(--border-light); vertical-align: middle;
+    color: var(--text-secondary);
 }
 .table-wrap tr:last-child td { border-bottom: none; }
-.table-wrap tr:hover td { background: #f8fafc; }
-.table-wrap .name-cell { font-weight: 600; }
+.table-wrap tbody tr { transition: background 0.1s; }
+.table-wrap tbody tr:hover td { background: var(--surface-raised); }
+.table-wrap td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.table-wrap .name-cell { font-weight: 600; color: var(--text); }
+.table-wrap .time-cell { font-family: 'JetBrains Mono', monospace; font-size: 11px; white-space: nowrap; }
+.table-wrap .guest-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500; text-align: right;
+}
 
-/* Rooms */
+/* ---- Rooms ---- */
 .rooms-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px; margin-bottom: 32px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px; margin-bottom: 40px;
 }
 
 .room-card {
-    background: var(--surface); border-radius: var(--radius); padding: 16px 20px;
-    box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center;
+    background: var(--surface); padding: 14px 16px;
+    border-radius: 10px; border: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: center;
+    transition: border-color 0.15s, background 0.15s;
 }
-.room-card .room-name { font-weight: 600; font-size: 14px; }
-.room-card .room-count { font-size: 22px; font-weight: 700; color: var(--accent); }
+.room-card:hover { background: var(--surface-raised); border-color: var(--border); }
+.room-card .room-name { font-weight: 500; font-size: 12px; color: var(--text-secondary); }
+.room-card .room-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 500; color: var(--orange);
+    letter-spacing: -0.5px;
+}
 
-/* Loading */
-.loading { text-align: center; padding: 60px; color: var(--text-secondary); font-size: 15px; }
+/* ---- Loading ---- */
+.loading {
+    text-align: center; padding: 80px 20px; color: var(--text-tertiary);
+    font-size: 12px; letter-spacing: 0.3px;
+}
 
 .loading .spinner {
-    display: inline-block; width: 28px; height: 28px;
-    border: 3px solid var(--border); border-top-color: var(--accent);
-    border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px;
+    display: inline-block; width: 18px; height: 18px;
+    border: 2px solid var(--border-light); border-top-color: var(--orange);
+    border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 14px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .error-banner {
-    background: var(--red-light); color: #991b1b; padding: 12px 20px;
-    border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none;
+    background: var(--red-dim); color: var(--red); padding: 10px 16px;
+    border-radius: 8px; margin-bottom: 20px; font-size: 12px; display: none;
 }
 
-.demo-banner {
-    background: var(--yellow-light); color: #854d0e; padding: 10px 20px;
-    border-radius: 8px; margin-bottom: 20px; font-size: 13px;
-    font-weight: 500; text-align: center; display: none;
+/* ---- Keyboard hint ---- */
+.kb-hint {
+    position: fixed; bottom: 16px; right: 16px;
+    font-size: 10px; color: var(--text-tertiary);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; gap: 6px; align-items: center;
+    opacity: 0; animation: fadeIn 0.5s 1.5s forwards;
+}
+.kb-hint kbd {
+    display: inline-block; padding: 1px 5px; border-radius: 3px;
+    border: 1px solid var(--border); background: var(--surface);
+    font-size: 10px; font-family: inherit;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
-/* Responsive */
-@media (max-width: 1024px) { .calendar { grid-template-columns: repeat(4, 1fr); } }
+/* ---- Responsive: Tablet landscape ---- */
+@media (max-width: 1200px) {
+    .calendar { grid-template-columns: repeat(7, 1fr); }
+    .day-head .ddate { font-size: 16px; }
+    .ev-card .ev-name { font-size: 11px; }
+    .ev-card .ev-time { font-size: 9px; }
+    .ev-card .ev-badges { display: none; }
+    .stats-row { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+}
+
+/* ---- Responsive: Tablet portrait ---- */
+@media (max-width: 960px) {
+    .calendar { grid-template-columns: repeat(7, 1fr); }
+    .day-col { min-height: 180px; }
+    .ev-card { padding: 5px 7px; }
+    .ev-card .ev-meta { display: none; }
+
+    /* Table: horizontal scroll */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .table-wrap table { min-width: 700px; }
+}
+
+/* ---- Responsive: Mobile ---- */
 @media (max-width: 768px) {
-    .topbar { padding: 12px 16px; flex-direction: column; gap: 12px; }
-    .main { padding: 16px; }
-    .calendar { grid-template-columns: 1fr 1fr; }
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .topbar {
+        height: auto; padding: 12px 16px;
+        flex-direction: column; gap: 10px;
+    }
+    .topbar-right { flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .topbar-right select {
+        font-size: 13px; padding: 8px 32px 8px 12px;
+        min-height: 44px;
+    }
+
+    .main { padding: 20px 16px 40px; }
+
+    .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .stat-card { padding: 16px 18px 14px; }
+    .stat-card .value { font-size: 28px; }
+
+    .week-nav { gap: 8px; }
+    .week-nav .nav-btn { width: 44px; height: 44px; font-size: 18px; }
+    .week-nav .week-label { font-size: 12px; }
+
+    .calendar {
+        grid-template-columns: repeat(2, 1fr);
+        border-radius: 10px;
+    }
+    .day-col { min-height: 120px; }
+    .day-head { padding: 8px 8px 6px; }
+    .day-head .dname { font-size: 9px; letter-spacing: 0.4px; }
+    .day-head .ddate { font-size: 15px; }
+    .day-count { font-size: 9px; padding: 1px 5px; }
+    .day-body { padding: 4px; gap: 3px; }
+    .ev-card { padding: 6px 8px; border-radius: 5px; border-left-width: 2px; }
+    .ev-card .ev-badges { display: none; }
+    .ev-card .ev-name { font-size: 11px; }
+    .ev-card .ev-time { font-size: 9px; }
+    .ev-card .ev-meta { display: none; }
+
+    .table-wrap table { min-width: 640px; }
+    .table-wrap th, .table-wrap td { padding: 8px 10px; }
+
+    .rooms-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+
+    .kb-hint { display: none; }
 }
-@media (max-width: 480px) { .calendar { grid-template-columns: 1fr; } }
+
+/* ---- Responsive: Small mobile ---- */
+@media (max-width: 480px) {
+    .calendar { grid-template-columns: 1fr; }
+    .day-col { min-height: auto; }
+    .day-col:empty { display: none; }
+    .day-head { padding: 10px 10px 8px; }
+    .day-head .dname { font-size: 10px; }
+    .day-head .ddate { font-size: 16px; }
+    .day-body { padding: 5px; gap: 3px; }
+    .ev-card .ev-name { font-size: 12px; }
+    .ev-card .ev-time { font-size: 10px; }
+    .ev-card .ev-badges { display: flex; }
+
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-card .value { font-size: 24px; letter-spacing: -1px; }
+    .stat-card .label { font-size: 9px; }
+
+    .section-title { font-size: 10px; }
+    .rooms-grid { grid-template-columns: 1fr; }
+}
 
 @media print {
-    .topbar { position: relative; box-shadow: none; }
-    .day-col { box-shadow: none; border: 1px solid var(--border); min-height: auto; }
-    .day-col.today { box-shadow: none; border: 2px solid var(--accent); }
-    .ev-card { break-inside: avoid; }
+    :root {
+        --bg: #fff; --surface: #fff; --surface-raised: #f5f5f5;
+        --text: #111; --text-secondary: #555; --text-tertiary: #999;
+        --border: #ccc; --border-light: #ddd;
+    }
+    body { background: #fff; color: #111; }
+    .topbar { position: relative; backdrop-filter: none; -webkit-backdrop-filter: none; background: #fff; }
+    .logo-img { filter: none; }
+    .day-col { min-height: auto; }
+    .ev-card { break-inside: avoid; box-shadow: none; }
+    .kb-hint { display: none; }
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<nav class="topbar" aria-label="Event filters">
     <div class="topbar-left">
-        <h1>Tripleseat Dashboard</h1>
-        <span class="badge" id="badge">Loading...</span>
+        <img src="pukey_art_-09.png" alt="PubKey" class="logo-img">
+        <span class="badge" id="badge">--</span>
     </div>
     <div class="topbar-right">
-        <select id="statusFilter">
+        <select id="statusFilter" aria-label="Filter by status">
             <option value="all">All Statuses</option>
-            <option value="confirmed">Confirmed</option>
+            <option value="definite">Definite</option>
             <option value="tentative">Tentative</option>
             <option value="prospect">Prospect</option>
         </select>
-        <select id="roomFilter">
+        <select id="locationFilter" aria-label="Filter by location">
+            <option value="all">Both Locations</option>
+            <option value="nyc">NYC Only</option>
+            <option value="dc">DC Only</option>
+        </select>
+        <select id="roomFilter" aria-label="Filter by room">
             <option value="all">All Rooms</option>
         </select>
-        <button onclick="refreshData()">Refresh</button>
         <span class="refresh-indicator" id="lastRefresh"></span>
     </div>
-</div>
+</nav>
 
-<div class="main">
-    <div class="demo-banner" id="demoBanner">
-        Demo Mode — showing sample data. Add your Tripleseat API credentials in Vercel Environment Variables to see real events.
-    </div>
+<main class="main">
+    <h1 class="sr-only">PubKey Events Dashboard</h1>
     <div class="error-banner" id="errorBanner"></div>
 
     <div class="stats-row">
-        <div class="stat-card accent">
-            <span class="label">Total Events</span>
-            <span class="value" id="statTotal">—</span>
-            <span class="sub">this week</span>
+        <div class="stat-card accent-orange">
+            <div class="label">This Week</div>
+            <div class="value" id="statTotal">&mdash;</div>
+            <div class="sub" id="statSub">events</div>
         </div>
-        <div class="stat-card green">
-            <span class="label">Confirmed</span>
-            <span class="value" id="statConfirmed">—</span>
-            <span class="sub">ready to go</span>
+        <div class="stat-card accent-blue">
+            <div class="label">NYC</div>
+            <div class="value" id="statNYC">&mdash;</div>
+            <div class="sub">events</div>
         </div>
-        <div class="stat-card yellow">
-            <span class="label">Tentative</span>
-            <span class="value" id="statTentative">—</span>
-            <span class="sub">pending confirmation</span>
+        <div class="stat-card accent-red">
+            <div class="label">DC</div>
+            <div class="value" id="statDC">&mdash;</div>
+            <div class="sub">events</div>
         </div>
-        <div class="stat-card teal">
-            <span class="label">Expected Guests</span>
-            <span class="value" id="statGuests">—</span>
-            <span class="sub">total headcount</span>
-        </div>
-        <div class="stat-card purple">
-            <span class="label">Rooms Booked</span>
-            <span class="value" id="statRooms">—</span>
-            <span class="sub">unique spaces</span>
+        <div class="stat-card">
+            <div class="label">Guests</div>
+            <div class="value" id="statGuests">&mdash;</div>
+            <div class="sub">expected</div>
         </div>
     </div>
 
     <div class="week-nav">
-        <button onclick="changeWeek(-1)">&larr; Previous</button>
+        <button class="nav-btn" onclick="changeWeek(-1)" aria-label="Previous week">&#8249;</button>
+        <button class="nav-btn" onclick="changeWeek(1)" aria-label="Next week">&#8250;</button>
         <span class="week-label" id="weekLabel"></span>
-        <button onclick="changeWeek(1)">Next &rarr;</button>
         <button class="today-btn" onclick="changeWeek(0)">Today</button>
     </div>
 
@@ -331,36 +609,564 @@ body {
         <div class="loading"><div class="spinner"></div><br>Loading events...</div>
     </div>
 
-    <h2 class="section-title">Upcoming Events</h2>
+    <div class="section-header">
+        <h2 class="section-title">Upcoming</h2>
+        <span class="section-count" id="upcomingCount"></span>
+    </div>
     <div class="table-wrap">
         <table>
+            <colgroup>
+                <col class="col-date"><col class="col-time"><col class="col-event">
+                <col class="col-status"><col class="col-loc"><col class="col-room">
+                <col class="col-contact"><col class="col-guests">
+            </colgroup>
             <thead>
                 <tr>
                     <th>Date</th><th>Time</th><th>Event</th>
-                    <th>Status</th><th>Room</th><th>Contact</th><th>Guests</th>
+                    <th>Status</th><th>Location</th><th>Room</th><th>Contact</th><th class="text-right">Guests</th>
                 </tr>
             </thead>
             <tbody id="upcomingBody"></tbody>
         </table>
     </div>
 
-    <h2 class="section-title">By Room</h2>
+    <div class="section-header">
+        <h2 class="section-title">Rooms This Week</h2>
+    </div>
     <div class="rooms-grid" id="roomsGrid"></div>
+</main>
+
+<div class="kb-hint">
+    <kbd>&larr;</kbd><kbd>&rarr;</kbd> navigate weeks
 </div>
 
 <script>
 let allItems = [];
 let weekOffset = 0;
 let activeStatusFilter = "all";
+let activeLocationFilter = "all";
 let activeRoomFilter = "all";
 
+/* ---- CSV Parser (handles quoted fields) ---- */
+function parseCSV(text) {
+    const lines = text.split(/\r?\n/).filter(function(l) { return l.trim(); });
+    if (lines.length < 2) return [];
+    const headers = parseCSVLine(lines[0]);
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+        const vals = parseCSVLine(lines[i]);
+        if (!vals || vals.length < 2) continue;
+        const obj = {};
+        headers.forEach(function(h, idx) { obj[h.trim()] = (vals[idx] || "").trim(); });
+        rows.push(obj);
+    }
+    return rows;
+}
+
+function parseCSVLine(line) {
+    const result = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        var ch = line[i];
+        if (inQuotes) {
+            if (ch === '"' && line[i + 1] === '"') { current += '"'; i++; }
+            else if (ch === '"') { inQuotes = false; }
+            else { current += ch; }
+        } else {
+            if (ch === '"') { inQuotes = true; }
+            else if (ch === ',') { result.push(current); current = ""; }
+            else { current += ch; }
+        }
+    }
+    result.push(current);
+    return result;
+}
+
+/* ---- Parse date/time from CSV fields ---- */
+function parseDateTime(dateStr, timeStr) {
+    if (!dateStr) return null;
+    // Date: M/D/YYYY
+    var parts = dateStr.split('/');
+    if (parts.length !== 3) return null;
+    var month = parseInt(parts[0]) - 1;
+    var day = parseInt(parts[1]);
+    var year = parseInt(parts[2]);
+
+    if (!timeStr) return new Date(year, month, day);
+
+    // Time: h:mm AM/PM or h:mm PM
+    var tm = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!tm) return new Date(year, month, day);
+    var h = parseInt(tm[1]);
+    var m = parseInt(tm[2]);
+    var ap = tm[3].toUpperCase();
+    if (ap === 'PM' && h !== 12) h += 12;
+    if (ap === 'AM' && h === 12) h = 0;
+    return new Date(year, month, day, h, m);
+}
+
+function csvRowToItem(row) {
+    // Skip total/summary rows
+    if (!row['Date'] || row['Name'] === 'Grand Total') return null;
+    var startDt = parseDateTime(row['Date'], row['Start Time']);
+    var endDt = parseDateTime(row['Date'], row['End Time']);
+    if (!startDt) return null;
+
+    // Handle end times past midnight (end < start means next day)
+    if (endDt && endDt < startDt) {
+        endDt.setDate(endDt.getDate() + 1);
+    }
+
+    var loc = row['Location'] || '';
+    var locKey = loc.toLowerCase().indexOf('dc') !== -1 ? 'dc' : 'nyc';
+
+    return {
+        name: row['Name'] || '',
+        status: (row['Status'] || '').toLowerCase(),
+        start: startDt.toISOString(),
+        end: endDt ? endDt.toISOString() : null,
+        startDate: startDt,
+        location: loc,
+        locKey: locKey,
+        room: row['Rooms'] || '',
+        guest_count: parseInt(row['Guests']) || 0,
+        contact: row['Contact'] || '',
+        eventStyle: row['Event Style'] || '',
+        type: row['Type'] || ''
+    };
+}
+
+/* ---- Embedded CSV Data ---- */
+var CSV_JAN_APR = `Name,Status,Date,Start Time,End Time,Location,Event Style,Rooms,Guests,Type,Contact,Event F&B Min,Event Grand Total,Deposit,Amount Due,Event Actual
+Ben Olins / Birthday,DEFINITE,1/3/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Ben Olins,,,,,
+Cryptomondays - BTC,DEFINITE,1/5/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Trevor Stuart,DEFINITE,1/6/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,The Banq,18,,Trevor Stuart,,,,,
+Jesus Vasquez,DEFINITE,1/7/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,35,,Jesus Vasquez,,,,,
+Rebecca Rettig / Welcome Home Party for Jito,DEFINITE,1/8/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,100,,Rebecca Rettig,,,,,
+Passage Press,DEFINITE,1/8/2026,8:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Michael D'Agostino,,,,,
+Kevin Rosenberg / Going away party,DEFINITE,1/9/2026,4:30 PM,8:30 PM,PubKey - DC,Large Party Reservation,Reception Bar,60,,Kevin Rosenberg,,,,,
+Dalya Arik,DEFINITE,1/9/2026,9:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Dalya Arik,,,,,
+Nick Camacho / movie after party,DEFINITE,1/9/2026,10:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Bar,30,,Nick CAmacho,,,,,
+Libby McGraw / Birthday,DEFINITE,1/9/2026,10:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,The Banq,20,,Libby McGraw,,,,,
+Jenna Pilgrim / Birthday,DEFINITE,1/10/2026,7:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Jenna Pilgrim,,,,,
+Jessica Burton / Birthday,DEFINITE,1/10/2026,7:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Jessica Burton,,,,,
+Olivia Levine,DEFINITE,1/10/2026,10:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,"PubKey Attic, The Banq",80,,Olivia Levine,,,,,
+Brayden / Sunday Trivia,DEFINITE,1/11/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Veronica Kwiatkowski,DEFINITE,1/12/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Next Layer Capital,DEFINITE,1/13/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Brandon Turp,,,,,
+BPI / Programming,DEFINITE,1/14/2026,5:00 PM,9:00 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",150,,Mills ,,,,,
+PKP: Coin Based,DEFINITE,1/15/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Michael D'Agostino,,,,,
+Moki Media HH,DEFINITE,1/15/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Ballroom,150,,Dannia Hakki,,,,,
+Dark Horse Comedy,DEFINITE,1/15/2026,9:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Vincent James,,,,,
+James / Blockbuster,DEFINITE,1/16/2026,6:00 PM,10:00 PM,PubKey - DC,On-Premise Event,Ballroom,5,,James O'beirne,,,,,
+One Up!,DEFINITE,1/16/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Sara Bartoli / Birthday,DEFINITE,1/16/2026,10:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,113,,Sara Bartoli,,,,,
+Deanna Cohen / Birthday,DEFINITE,1/17/2026,8:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Deanna Cohen,,,,,
+John Faugno,DEFINITE,1/17/2026,8:30 PM,11:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,John Faugno,,,,,
+Brayden / Sunday Trivia,DEFINITE,1/18/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Cryptomondays - BTC,DEFINITE,1/19/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Veronica Kwiatkowski,DEFINITE,1/19/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Josh Lopez / Birthday,DEFINITE,1/20/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Reception Bar,50,,Josh Lopez,,,,,
+NYC Trivia League,DEFINITE,1/20/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Bhavna Patel / Women & Bitcoin,DEFINITE,1/20/2026,7:00 PM,8:30 PM,PubKey - DC,On-Premise Event,Karoake Room,15,,Bhavna Patel,,,,,
+NY Mug Club Meet Up,DEFINITE,1/21/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Ryan Mug Club,,,,,
+PKP: What Bitcoin Means for DC Businesses,DEFINITE,1/21/2026,7:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,100,,Dan Kablaoui,,,,,
+Mills Miller / BPI Lunch,DEFINITE,1/22/2026,1:30 PM,3:30 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Mills ,,,,,
+PKP: NY AG nominee Khurram Dara with Frank Corva,DEFINITE,1/22/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Frank Corva,,,,,
+Nathan Halberstadt / Business HH,DEFINITE,1/22/2026,6:30 PM,8:00 PM,PubKey - DC,On-Premise Event,Pub,25,,Nathan Halberstadt,,,,,
+Dark Horse Comedy,DEFINITE,1/22/2026,9:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Vincent James,,,,,
+Jake Madsen,DEFINITE,1/23/2026,9:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Jake Madsen,,,,,
+Sydney PK / Birthday,DEFINITE,1/23/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,The Banq,20,,Sydney White,,,,,
+Nader Granmayeh / Happy Hour,DEFINITE,1/24/2026,6:30 PM,9:30 PM,PubKey - NYC,On-Premise Event,PubKey Bar,50,,Nader Granmayeh,,,,,
+Madison McKnight / Birthday,DEFINITE,1/24/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Madison McKnight,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,1/24/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Lucas Grafals / Birthday,DEFINITE,1/24/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,The Banq,20,,Lucas Grafals,,,,,
+Jane Kavounas,DEFINITE,1/24/2026,9:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Jane Kavounas,,,,,
+Brayden / Sunday Trivia,DEFINITE,1/25/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+BitPlebs / Jesse C,DEFINITE,1/26/2026,6:00 PM,10:00 PM,PubKey - DC,On-Premise Event,Ballroom,40,,Jesse C,,,,,
+Veronica Kwiatkowski,DEFINITE,1/26/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Mayor + Friends / Drinks,DEFINITE,1/27/2026,5:00 PM,7:00 PM,PubKey - DC,On-Premise Event,Ballroom,30,,Dan Kablaoui,,,,,
+Josh Yakov / Tribute Labs,DEFINITE,1/27/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Josh Yakov,,,,,
+NYC Trivia League,DEFINITE,1/27/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+GEMINI SERIES LIVE @ PUBKEY,DEFINITE,1/28/2026,5:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,"PubKey Parlor, PubKey Bar",,,Dan Kablaoui,,,,,
+PKP: THNDR LEVELS UP GAMING INDUSTRY,DEFINITE,1/28/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Trey Musgrave,,,,,
+Natalie Orslene,DEFINITE,1/28/2026,6:30 PM,9:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Natalie Orslene,,,,,
+Robin Weiss,DEFINITE,1/29/2026,8:30 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Robin Weiss,,,,,
+Raw Egg Nationalist / Book Release,DEFINITE,1/30/2026,8:00 PM,12:00 AM,PubKey - DC,On-Premise Event,Reception Bar,100,,Matt Easton,,,,,
+Livia Jones,DEFINITE,1/30/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Livia Jones,,,,,
+Kylie Featherstone / Birthday,DEFINITE,1/30/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,The Banq,20,,Kylie Featherstone,,,,,
+Celine Saghir,DEFINITE,1/31/2026,1:00 PM,5:00 PM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,100,,Celine  Saghir,,,,,
+Joshua Stern / Birthday,DEFINITE,1/31/2026,5:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Joshua Stern,,,,,
+Passage Press / Justin Lee,DEFINITE,1/31/2026,8:00 PM,1:00 AM,PubKey - DC,On-Premise Event,Ballroom,100,,Matt Easton,,,,,
+Eva Hayman,DEFINITE,1/31/2026,9:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Eva Hayman,,,,,
+Allexa Bartholomew / Birthday,DEFINITE,1/31/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,The Banq,20,,Allexa Bartholomew,,,,,
+Eric Prag / Charity Poker Tournament,DEFINITE,2/1/2026,11:00 AM,7:00 PM,PubKey - DC,On-Premise Event,Ballroom,30,,Eric Prag,,,,,
+Brayden / Sunday Trivia,DEFINITE,2/1/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Trivia Nights at PK DC,DEFINITE,2/2/2026,7:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,20,,Christian Hunt,,,,,
+Veronica Kwiatkowski,DEFINITE,2/2/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Basis / Work Event,DEFINITE,2/3/2026,5:30 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Francis Northwood,,,,,
+NYC Trivia League,DEFINITE,2/3/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Ali Fischbein / Late Night TV Screening,DEFINITE,2/3/2026,10:30 PM,1:00 AM,PubKey - NYC,On-Premise Event,Attic East,15,,Ali Fischbein,,,,,
+Rep. Russell Fry / Birthday,DEFINITE,2/4/2026,6:00 PM,8:30 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",120,,Lucy Driscoll,,,,,
+Josh Rothstein / Departure Party,DEFINITE,2/5/2026,4:30 PM,7:00 PM,PubKey - DC,On-Premise Event,Reception Bar,35,,Josh Rothstein,,,,,
+Alex Thorn / 40th birthday,DEFINITE,2/5/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,100,,Alex Thorn,,,,,
+Prava / Going Away Party,DEFINITE,2/6/2026,4:30 PM,7:30 PM,PubKey - DC,On-Premise Event,Reception Bar,20,,Prava Palacharla,,,,,
+Feyza Solmaz / Citrea,DEFINITE,2/6/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Gabe Parker,,,,,
+One Up!,DEFINITE,2/6/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Apres Ski / Olympics 2026 Party,DEFINITE,2/6/2026,8:00 PM,12:00 AM,PubKey - DC,On-Premise Event,"Ballroom, Karoake Room",100,,Katie Partlow,,,,,
+Jillian Schwartz,DEFINITE,2/6/2026,10:30 PM,4:00 AM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,100,,Jillian Schwartz,,,,,
+Gabriela Nishioka / Birthday,DEFINITE,2/7/2026,2:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Gabriela Nishioka,,,,,
+Ben Rock / Birthday,DEFINITE,2/7/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Ben Rock,,,,,
+Emma's Birthday,DEFINITE,2/7/2026,8:00 PM,11:00 PM,PubKey - DC,On-Premise Event,Pub,25,,Emma Kaboli,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,2/7/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",200,,Tim Landis,,,,,
+Dennis Porto,DEFINITE,2/7/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Dennis Porto,,,,,
+Brayden / Sunday Trivia,DEFINITE,2/8/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Tess McMullin / Birthday + Super Bowl,DEFINITE,2/8/2026,5:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,35,,Tess McMullin,,,,,
+Super Bowl Watch Party,DEFINITE,2/8/2026,6:00 PM,11:00 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",100,,Katie Partlow,,,,,
+Cryptomondays - BTC,DEFINITE,2/9/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Trivia Nights at PK DC,DEFINITE,2/9/2026,7:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,20,,Christian Hunt,,,,,
+Veronica Kwiatkowski,DEFINITE,2/9/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,2/10/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Bar,50,,Erika Ziolkowski,,,,,
+Book Club / Jonathan J.,DEFINITE,2/10/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,The Banq,15,,Jonathan Jin,,,,,
+Arch Public / Client Event,DEFINITE,2/10/2026,7:30 PM,9:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Luca Taormina,,,,,
+John Brady / Cocktail Hour,DEFINITE,2/10/2026,7:30 PM,8:30 PM,PubKey - DC,On-Premise Event,Pub,15,,John Brady,,,,,
+Wintermute / Daniel Mon,DEFINITE,2/11/2026,5:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Daniel Mon,,,,,
+Nicole / Nevada HH,DEFINITE,2/11/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Pub,15,,Nicole Kelly,,,,,
+PKP,DEFINITE,2/12/2026,5:30 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Michael D'Agostino,,,,,
+Dominique Landinez / Kink N Draw,DEFINITE,2/12/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,60,,Dominique Landinez,,,,,
+Dark Horse Comedy,DEFINITE,2/12/2026,9:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Vincent James,,,,,
+Mardi Gras Weekend Bar Crawl,DEFINITE,2/13/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Pub,20,,Brian Levinson,,,,,
+Brianna Sierra / Vday Party,DEFINITE,2/13/2026,7:30 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Brianna Sierra,,,,,
+Drew / Social Event,DEFINITE,2/13/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Drew Armstrong,,,,,
+Passage Press / “worst boyfriend ever”,DEFINITE,2/14/2026,8:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Michael D'Agostino,,,,,
+The Love Below Vol. 2 / Valentine's Party,DEFINITE,2/14/2026,8:00 PM,12:00 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom, Karoake Room",150,,Katie Partlow,,,,,
+Eric Prag / Charity Poker Tournament,DEFINITE,2/15/2026,11:00 AM,7:00 PM,PubKey - DC,On-Premise Event,Ballroom,60,,Eric Prag,,,,,
+Jackie Gunderman / Art Event,DEFINITE,2/15/2026,2:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Jackie Gunderman,,,,,
+Allie Brennan / Bar Crawlers,DEFINITE,2/15/2026,6:30 PM,8:30 PM,PubKey - NYC,On-Premise Event,The Banq,15,,Allie Brennan,,,,,
+Eric Ebron / VIP The Nook,DEFINITE,2/15/2026,7:30 PM,9:30 PM,PubKey - NYC,On-Premise Event,The Nook,5,,Thomas Pacchia,,,,,
+Passage Press / KIRAC,DEFINITE,2/15/2026,8:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Matt Easton,,,,,
+Cryptomondays - BTC,DEFINITE,2/16/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Trivia Nights at PK DC,DEFINITE,2/16/2026,7:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,20,,Christian Hunt,,,,,
+Comedy Pop Up!,DEFINITE,2/16/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Brent Williams,,,,,
+Mardi Gras Weekend Bar Crawl,DEFINITE,2/17/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Pub,20,,Brian Levinson,,,,,
+Bhavna Patel / Women & Bitcoin,DEFINITE,2/17/2026,6:30 PM,8:30 PM,PubKey - DC,On-Premise Event,Ballroom,25,,Bhavna Patel,,,,,
+NYC Trivia League,DEFINITE,2/17/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+HRF,DEFINITE,2/18/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Arsh Molu,,,,,
+PKP: Trey Musgrave / The Great Mid-Atlantic Bitcoin Meetup,DEFINITE,2/18/2026,6:30 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Trey Musgrave,,,,,
+South Carolina State Society,DEFINITE,2/19/2026,5:30 PM,7:30 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",100,,Annie Culbertson,,,,,
+PKP: Will Foxley,DEFINITE,2/19/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Michael D'Agostino,,,,,
+Michael Broderick,DEFINITE,2/19/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,The Banq,15,,Michael Broderick,,,,,
+Jake Lemonade / Stand Up Comedy,DEFINITE,2/19/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Jake Lemonade,,,,,
+Bitcoint Treasuries / Ed Juline,DEFINITE,2/20/2026,12:00 PM,4:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Ed Juline ,,,,,
+Bitcoin Funeral Party / BPI,DEFINITE,2/20/2026,5:00 PM,7:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Mills ,,,,,
+Georgetown Law HH,DEFINITE,2/20/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Reception Bar,20,,Arielle Vertsman,,,,,
+Blockbuster 002: DJ Jamesob,DEFINITE,2/20/2026,7:00 PM,12:00 AM,PubKey - DC,On-Premise Event,Ballroom,50,,Katie Partlow,,,,,
+Alex Nesi / Birthday,DEFINITE,2/20/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,113,,Alex Nesi,,,,,
+Art Mixer / Isabella,DEFINITE,2/21/2026,3:00 PM,5:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,25,,Isabella Filosa,,,,,
+NY Mug Club Meet Up,DEFINITE,2/21/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Ryan Mug Club,,,,,
+Tim Ciafano / Birthday,DEFINITE,2/21/2026,7:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Tim Cianfano,,,,,
+Justin Quimbo / goodbye drinks and eats,DEFINITE,2/21/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,justin quimbo,,,,,
+Brayden / Sunday Trivia,DEFINITE,2/22/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Veronica Kwiatkowski,DEFINITE,2/23/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Pratik K. / Meet up,DEFINITE,2/24/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Pub,15,,Pratik K.,,,,,
+Fundraiser for Alex Bores,DEFINITE,2/24/2026,6:30 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,25,,Allison Romer,,,,,
+Book Club / Jonathan J.,DEFINITE,2/24/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,The Banq,15,,Jonathan Jin,,,,,
+PKP: Building the Bitcoin Community in a Privacy-First Digital Age,DEFINITE,2/25/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Michael D'Agostino,,,,,
+PKP: Powering the Future of American Farming / Bitcoin District,DEFINITE,2/25/2026,6:30 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Trey Musgrave,,,,,
+Forecaster Meetup,DEFINITE,2/26/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Edward Ridgely,,,,,
+Capital Club / Social Hour,DEFINITE,2/26/2026,7:00 PM,9:00 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",100,,Warren ,,,,,
+Passage Press / the burning palace,DEFINITE,2/26/2026,8:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Matt Easton,,,,,
+Casey Ritts / Team Happy Hour,DEFINITE,2/27/2026,4:00 PM,6:30 PM,PubKey - NYC,On-Premise Event,The Banq,15,,Casey Ritts,,,,,
+Aron C-L / Happy Hour for alumni,DEFINITE,2/27/2026,4:30 PM,6:30 PM,PubKey - DC,On-Premise Event,Pub,30,,Aron Cowen-Luehrmann,,,,,
+Austin Wimberly,DEFINITE,2/27/2026,5:30 PM,7:00 PM,PubKey - DC,Large Party Reservation,Pub,12,,Austin Wimberly,,,,,
+Dark Horse Comedy,DEFINITE,2/27/2026,6:30 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Vincent James,,,,,
+Leo Fenton,DEFINITE,2/27/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,The Banq,18,,Leo Fenton,,,,,
+Smut Slam DC,DEFINITE,2/27/2026,8:00 PM,11:00 PM,PubKey - DC,On-Premise Event,Ballroom,100,,Diva Darling,,,,,
+Roxy Mistry / Birthday,DEFINITE,2/27/2026,9:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Roxy Mistry,,,,,
+PK Kid's Club with Jim Dandy,DEFINITE,2/28/2026,11:00 AM,1:00 PM,PubKey - DC,On-Premise Event,Ballroom,60,,Katie Partlow,,,,,
+Jill Burke / Engagement Party,DEFINITE,2/28/2026,4:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,113,,Jill Burke,,,,,
+Katie Gergel / Writing Group One Year Anniversary Party,DEFINITE,2/28/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,25,,Katie Gergel,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,2/28/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",100,,Tim Landis,,,,,
+Busak Gunver,DEFINITE,2/28/2026,10:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,The Banq,20,,Basak Gunver,,,,,
+Brayden / Sunday Trivia,CLOSED,3/1/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Nick Bailey / Comedy Show,CLOSED,3/1/2026,5:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Nick Bailey,,,,,
+Christine DuFur / Birthday Party,CLOSED,3/1/2026,7:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,25,,Christine DuFur,,,,,
+Cryptomondays - BTC,CLOSED,3/2/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Trivia Nights at PK DC,CLOSED,3/2/2026,7:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,20,,Christian Hunt,,,,,
+Veronica Kwiatkowski,CLOSED,3/2/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Pathways to Freedom,CLOSED,3/3/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Ballroom,75,,Thomas Pacchia,,,,,
+NYC Trivia League,CLOSED,3/3/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Natalie Landsberg / 30th Birthday,CLOSED,3/3/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Natalie Landsberg,,,,,
+JamLab! / Rob,CLOSED,3/4/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Rob Shapiro,,,,,
+BitDevs / Meet Up,CLOSED,3/5/2026,9:30 PM,11:30 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Eric Pimenta,,,,,
+Mayor's Staff Party,CLOSED,3/6/2026,5:00 PM,7:00 PM,PubKey - DC,On-Premise Event,Reception Bar,50,,Dan Kablaoui,,,,,
+Elizabeth Britt / Birthday,CLOSED,3/6/2026,9:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Elizabeth Britt,,,,,
+Richard Adamovich-Zeitland,CLOSED,3/7/2026,1:00 PM,4:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Richard Adamovich-Zeitlin,,,,,
+Matt Corallo,CLOSED,3/7/2026,7:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Bar,40,Anniversary,Mattq Corallo,"\$10,000.00",,,,
+Firehouse Fridays / Country Dancing,CLOSED,3/7/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,Ballroom,100,,Tim Landis,,,,,
+Andrew Olinger / Birthday,CLOSED,3/7/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,20,Birthday,Andrew Olinger,,,,,
+Leslie Intern Group,CLOSED,3/8/2026,5:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Leslie Robinson,,,,,
+Anthony Mendieta / campaign fundraiser,CLOSED,3/9/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Anthony Mendieta Zamora,,,,,
+Trivia Nights at PK DC,CLOSED,3/9/2026,7:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,20,,Christian Hunt,,,,,
+Justice Fundraiser / Michael DiRoma,CLOSED,3/9/2026,7:00 PM,8:30 PM,PubKey - DC,On-Premise Event,Reception Bar,40,,Michael DiRoma,,,,,
+Shakespeare Theatre After Party / Talk,CLOSED,3/9/2026,9:30 PM,11:00 PM,PubKey - DC,On-Premise Event,Pub,20,,Amelia Parenteau,,,,,
+Reading Rhythms Book Party / Ellen L,CLOSED,3/10/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Ellen L,,,,,
+Julia Canty / Business happy hour,CLOSED,3/10/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Pub,25,,Julia Canty,,"\$2,000.50",,,"\$2,000.50"
+Martina Cuneo / Dinner,CLOSED,3/10/2026,6:30 PM,8:30 PM,PubKey - NYC,On-Premise Event,The Banq,12,,Martina Cuneo,,,,,
+Introduction HH / Erika Ziolkowski,CLOSED,3/10/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,\$515.20,\$480.00,,
+BPI Happy Hour,CLOSED,3/11/2026,5:00 PM,7:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Mills ,,,,,
+Spiral / Haley,CLOSED,3/11/2026,6:30 PM,9:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Haley Berkoe,,,,,
+Book Club / Jonathan J.,CLOSED,3/11/2026,6:30 PM,8:30 PM,PubKey - NYC,On-Premise Event,The Banq,10,,Jonathan Jin,,,,,
+PKP: Coin Based,CLOSED,3/12/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Michael D'Agostino,,,,,
+Dark Horse Comedy,CLOSED,3/12/2026,9:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Vincent James,,,,,
+Grace Geehan / Birthday,CLOSED,3/13/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Grace Geehan,,,,,
+Benny Stanislawski / Birthday,CLOSED,3/13/2026,9:00 PM,12:00 AM,PubKey - DC,On-Premise Event,Reception Bar,35,,Benny Stanislawski,,,,,
+Nerdvana: A Comic Strip Showdown,CLOSED,3/14/2026,7:00 PM,10:30 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",150,,Maki Roll,,,,,
+Margie Guan / Birthday,CLOSED,3/14/2026,8:30 PM,11:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Margie Guan,,,,,
+Elizabeth Riti / Birthday,CLOSED,3/14/2026,9:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Elizabeth Riti,,,,,
+Dakota Brown / RUNSTR,CLOSED,3/15/2026,10:00 AM,1:00 PM,PubKey - DC,Large Party Reservation,Reception Bar,50,,Dakota Brown,,,,,
+Brayden / Sunday Trivia,CLOSED,3/15/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Crypto Capitol: EthDC III,CLOSED,3/16/2026,11:00 AM,7:00 PM,PubKey - DC,On-Premise Event,"Pub, Reception Bar, Ballroom",200,,Shailee ,"\$3,000.00",,"\$18,000.00",,
+Ed Manzi / Unmuted (unmuted.fyi),CLOSED,3/16/2026,6:30 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,25,,Ed Manzi,,,,,
+Veronica Kwiatkowski,CLOSED,3/16/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+BPI Podcast w/ Marty on Tax Policy,CLOSED,3/17/2026,4:00 PM,5:00 PM,PubKey - DC,On-Premise Event,Ballroom,4,,Trey Musgrave,,,,,
+Strike Event,CLOSED,3/17/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,100,,Bennett Rehmert,"\$7,200.00","\$11,449.60",,,
+THE NEW FRONTIER OF BITCOIN MINING,CLOSED,3/17/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Trey Musgrave,,,,,
+So Far Sounds,CLOSED,3/18/2026,6:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Ross Newhouse,,,,,
+Reading and Performance Art,CLOSED,3/18/2026,8:30 PM,9:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,25,,Anthony Flesher,,,,,
+Celebration of Life,CLOSED,3/19/2026,4:00 PM,5:45 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Elyse Marshall,,,,,
+PKP: ​Stack ’n Sip: Stacking Through the Storm,CLOSED,3/19/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Michael D'Agostino,,,,,
+One Up!,CLOSED,3/19/2026,8:00 PM,10:15 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Roger Sanchez / Engagement Party,CLOSED,3/19/2026,8:00 PM,12:00 AM,PubKey - DC,On-Premise Event,Ballroom,70,,Roger Sanchez,,,,,
+Mimi MacCowatt / 30th Birthday,CLOSED,3/20/2026,10:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Mimi MacCowatt,,,,,
+Rachel Moll / Birthday,CLOSED,3/21/2026,4:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,45,,Rachel Moll,,,,,
+NY Mug Club Meet Up,CLOSED,3/21/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Ryan Mug Club,,,,,
+Brittany Mania / Run Club Anniversary,CLOSED,3/21/2026,7:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Brittany Mania,,,,,
+Nitya V,CLOSED,3/21/2026,10:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Nitya V,,,,,
+Jackie Gunderman / Art Event,CLOSED,3/22/2026,2:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Jackie Gunderman,,,,,
+Cryptomondays - BTC,CLOSED,3/23/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Forecaster Meetup,CLOSED,3/23/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,15,,Pratik K.,\$500.00,,,,
+Veronica Kwiatkowski,CLOSED,3/23/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Birthday TEST,DEFINITE,3/24/2026,9:30 AM,10:30 AM,PubKey - NYC,On-Premise Event,PubKey Parlor,20,,Christine Chapman,,\$811.91,\$500.00,\$0.00,\$630.00
+PKP: Bitcoin in the Modern Portfolio,CLOSED,3/24/2026,6:30 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Trey Musgrave,,,,,
+Book Club / Jonathan J.,CLOSED,3/24/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,The Banq,,,Jonathan Jin,,,,,
+Brandeis University / Alumni Event,CLOSED,3/25/2026,6:30 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Teri Tozzi,,,,,
+American AI Festival / Seedai,CLOSED,3/26/2026,10:00 AM,8:00 PM,PubKey - DC,On-Premise Event,"Pub, Reception Bar, Ballroom, Karoake Room, Smoke Room, Gallery",400,,Anna Rulloda,,,,,
+Charity Event,CLOSED,3/26/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Niko Martinovic,,,,,
+Camila Hess / Social Event,CLOSED,3/27/2026,7:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Camila Hess,,,,,
+Logan Prince,CLOSED,3/27/2026,8:00 PM,11:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,80,,Logan Prince,,,,,
+Nidhin Laji / Going Away Party,CLOSED,3/27/2026,11:30 PM,4:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,35,,Nidhin Laji,,,,,
+Bella Prince,DEFINITE,3/28/2026,4:00 PM,6:00 PM,PubKey - DC,On-Premise Event,Ballroom,20,,Bella Prince ,,,,,
+AI Doc Series - Afters,DEFINITE,3/28/2026,4:00 PM,6:00 PM,PubKey - DC,On-Premise Event,Ballroom,30,,John Bennett,,,,,
+Grace O'Hara / Birthday,CLOSED,3/28/2026,7:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,The Banq,25,,Grace O’Hara,,,,,
+Caroline Coles / Birthday,CLOSED,3/28/2026,9:30 PM,1:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Caroline Coles,,,,,
+NY Association of Black Journalists,CLOSED,3/29/2026,1:00 PM,4:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Cynthia Horner,,,,,
+Forecaster Meetup,CLOSED,3/30/2026,5:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Pratik Chougule,,,,,
+Louisa / Meetup,CLOSED,3/30/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Louisa ,,,,,
+Monumental Sports / Live Podcast,CLOSED,3/30/2026,6:00 PM,7:30 PM,PubKey - DC,On-Premise Event,Ballroom,20,,Cade Dickinson,,,,,
+Veronica Kwiatkowski,CLOSED,3/30/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+TEST / DC PARTY,DEFINITE,3/31/2026,3:00 PM,5:00 PM,PubKey - DC,On-Premise Event,Pub,20,Lunch,Dan Kablaoui,,\$31.20,\$0.00,\$31.20,\$24.00
+Bloom & Bitcoin: A Spring Social Gathering for DMV Women,DEFINITE,3/31/2026,6:30 PM,8:30 PM,PubKey - DC,On-Premise Event,Ballroom,30,,Bhavna Patel,,,,,
+Passage Press / the burning palace,DEFINITE,4/1/2026,8:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Matt Easton,,,,,
+Grand Total,,,,,,,,10163,,,\$20700.00,\$14808.41,\$18980.00,\$31.20,\$2654.50
+`;
+
+var CSV_APR_FORWARD = `Name,Status,Date,Start Time,End Time,Location,Event Style,Rooms,Guests,Type,Contact,Event F&B Min,Event Grand Total,Deposit,Amount Due,Event Actual
+Maxwell / Variety Show,DEFINITE,4/2/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,"PubKey Attic, The Banq",75,,Maxwell Friedman,,,,,
+Bloom Room,DEFINITE,4/3/2026,8:00 PM,11:00 PM,PubKey - DC,On-Premise Event,Ballroom,150,,Katie Partlow,,,,,
+PK Kid's Club: Easter Bash,DEFINITE,4/4/2026,11:00 AM,1:00 PM,PubKey - DC,On-Premise Event,Ballroom,150,,Katie Partlow,,,,,
+Smut Slam DC,DEFINITE,4/4/2026,8:00 PM,11:00 PM,PubKey - DC,On-Premise Event,Ballroom,100,,Diva Darling,,,,,
+Hayden Birthday,DEFINITE,4/4/2026,9:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,The Banq,20,,Hayden Roth,,,,,
+Hari Bhaskar / Birthday,DEFINITE,4/4/2026,9:30 PM,1:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Hari Bhaskar,,,,,
+Brayden / Sunday Trivia,DEFINITE,4/5/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+NYC Trivia League,DEFINITE,4/5/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Veronica Kwiatkowski,DEFINITE,4/6/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+Riverdale Mixer,DEFINITE,4/7/2026,5:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,"PubKey Attic, The Banq",30,,Megan  Pacchia,,,,,
+DCCBA: Q&A w/ Kenyan McDuffie,DEFINITE,4/7/2026,5:00 PM,7:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Katie Partlow,,,,,
+BPI: AGENTS OF CHANGE,DEFINITE,4/8/2026,5:00 PM,7:00 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",,,Trey Musgrave,,,,,
+Ben Herwitz Comedy,DEFINITE,4/8/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Ben Herwitz,,,,,
+Gabe Medoza / Happy Hour Meetup,DEFINITE,4/9/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Pub,,,Gabe Mendoza,,,,,
+Jack N / Party for Freedom,DEFINITE,4/9/2026,7:00 PM,10:00 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",150,,Jack Nicastro,,,,,
+School formal,DEFINITE,4/9/2026,8:30 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Anna November,,,,,
+Dark Horse Comedy,DEFINITE,4/9/2026,9:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Vincent James,,,,,
+Lucy Walker / Birthday party,DEFINITE,4/10/2026,9:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,113,,Lucy Walker,,,,,
+Courtney Velez / Birthday,DEFINITE,4/11/2026,8:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Courtney Velez,,,,,
+Eva Vasquez / Birthday,TENTATIVE,4/11/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Eva Vasquez,,,,,
+Kingpin Blues,DEFINITE,4/11/2026,8:30 PM,11:30 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Katie Partlow,,,,,
+Brayden / Sunday Trivia,DEFINITE,4/12/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+NYC Trivia League,DEFINITE,4/12/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Cullen  Shaw,,,,,
+Cryptomondays - BTC,DEFINITE,4/13/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Veronica Kwiatkowski,DEFINITE,4/13/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+HRF: This is How Freedom Tech Wins,DEFINITE,4/14/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Michael D'Agostino,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,4/14/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+Department of Commerce HH,DEFINITE,4/15/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Reception Bar,45,,Rachel Greenberg,,,,,
+BDI x PKP: OpenClaw/Ai Meetup,DEFINITE,4/15/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Trey Musgrave,,,,,
+Ed Manzi / Unmuted (unmuted.fyi),DEFINITE,4/15/2026,6:30 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,25,,Ed Manzi,,,,,
+"Lauren Comito / Retirement Party for President and Founder of ITIF, Rob Atkinson",DEFINITE,4/16/2026,5:30 PM,8:30 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom, Pub",250,,Lauren Comito,,,,,
+OpNext After Party with Will,DEFINITE,4/16/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,113,,Will Foxley,,,,,
+After Party / op_next conference,DEFINITE,4/16/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Afsheen Bigdeli,,,,,
+Ethan Merryfield / Birthday,DEFINITE,4/17/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Ethan Merryfield,,,,,
+Massey Fundraiser,PROSPECT,4/18/2026,2:00 PM,6:00 PM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,,,Michael D'Agostino,,,,,
+Sydney O / Birthday,DEFINITE,4/18/2026,9:00 PM,1:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Sydney O,,,,,
+Sabrina Torrado,PROSPECT,4/18/2026,9:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Sabrina Torrado,,,,,
+Matthew Greco / Mixer,PROSPECT,4/18/2026,10:00 PM,12:00 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",150,,Matthew Greco,,,,,
+Brayden / Sunday Trivia,DEFINITE,4/19/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+Brayden / Sunday Trivia,DEFINITE,4/19/2026,1:00 PM,3:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Brayden Welch,,,,,
+NYC Trivia League,DEFINITE,4/19/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Cryptomondays - BTC,DEFINITE,4/20/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Veronica Kwiatkowski,DEFINITE,4/20/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+HOLD : Jerk,PROSPECT,4/21/2026,4:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Greg  Miniasan,,,,,
+PKP x BDI: CJ + Ella Live,DEFINITE,4/22/2026,5:00 PM,8:30 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Trey Musgrave,,,,,
+JamLab! / Rob,TENTATIVE,4/22/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Rob Shapiro,,,,,
+PKP: HavenX,DEFINITE,4/23/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Alec Harris,,,,,
+Jake Lemonade / Stand Up Comedy,DEFINITE,4/23/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Jake Lemonade,,,,,
+White House Dinner,DEFINITE,4/24/2026,7:00 PM,10:00 PM,PubKey - DC,On-Premise Event,"Pub, Reception Bar, Ballroom",75,,Michael D'Agostino,,,,,
+Europeans in NYC Mixer,DEFINITE,4/24/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Mia Andersen,,,,,
+Birthday Party,DEFINITE,4/25/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,The Banq,25,,Olivia Luongo,,,,,
+Carly Hecht / Birthday,DEFINITE,4/25/2026,8:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Carly Hecht,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,4/25/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+NYC Trivia League,DEFINITE,4/26/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Veronica Kwiatkowski,DEFINITE,4/27/2026,8:30 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Veronica Kwiatkowski,,,,,
+HOLD : Jerk,PROSPECT,4/28/2026,4:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Greg  Miniasan,,,,,
+Comedy Pop Up!,DEFINITE,4/28/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Brent Williams,,,,,
+HOLD : Jerk,PROSPECT,4/29/2026,4:00 PM,7:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Greg  Miniasan,,,,,
+One Up!,DEFINITE,4/29/2026,7:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Alumni Networking Event,TENTATIVE,4/30/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Nicole Jagernauth,,,,,
+Dark Horse Comedy,DEFINITE,4/30/2026,9:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,20,,Vincent James,,,,,
+AnaSofia Ozimkiewicz / Birthday,DEFINITE,5/1/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,AnaSofia Ozimkiewicz,,,,,
+Sarah Hechler / 30th birthday for boyfriend,DEFINITE,5/2/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Sarah Hechler,,,,,
+NYC Trivia League,DEFINITE,5/5/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Josh at Cato,TENTATIVE,5/6/2026,5:30 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Full Bar & Attic,100,,Thomas Pacchia,,,,,
+Birthday,TENTATIVE,5/8/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Andres Carballo Odio,,,,,
+Christian Liskowitz / Surprise Birthday,DEFINITE,5/9/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Christian Liskowitz,,,,,
+Kingpin Blues,DEFINITE,5/9/2026,8:30 PM,11:30 PM,PubKey - DC,On-Premise Event,Ballroom,50,,Katie Partlow,,,,,
+Jackie Gunderman / Art Event,TENTATIVE,5/10/2026,1:00 PM,6:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Jackie Gunderman,,,,,
+Cryptomondays - BTC,DEFINITE,5/11/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,5/12/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+HRF,DEFINITE,5/13/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Michael D'Agostino,,,,,
+Strategic Cyber Ventures,PROSPECT,5/14/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Ballroom,70,,Evan Riley,,,,,
+Comedy Show with Jake G.,DEFINITE,5/14/2026,8:00 PM,10:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Jake Greenberg,,,,,
+AAPI Anthologies,DEFINITE,5/15/2026,7:00 PM,10:30 PM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",100,,Maki Roll,,,,,
+Emily Munch / Birthday,DEFINITE,5/15/2026,9:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Emily Munch,,,,,
+Helena Wassitsch / Graduation Party,DEFINITE,5/16/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Helena Wassitsch,,,,,
+Nadine G. / Party,TENTATIVE,5/16/2026,9:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Nadine Geagea,,,,,
+Cryptomondays - BTC,DEFINITE,5/18/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+DonorsTrust / Happy Hour Networking Event,DEFINITE,5/19/2026,6:00 PM,8:00 PM,PubKey - DC,On-Premise Event,Reception Bar,30,,Jennifer Kambara,,,,,
+DMV Women & Bitcoin,DEFINITE,5/19/2026,6:30 PM,8:30 PM,PubKey - DC,On-Premise Event,Ballroom,,,Bhavna Patel,,,,,
+NYC Trivia League,DEFINITE,5/19/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Kevin Comedy,DEFINITE,5/20/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Kevin Hubschmann,,,,,
+One Up!,DEFINITE,5/22/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+NYC Trivia League,DEFINITE,5/26/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Wedding Weekend Kickoff party,TENTATIVE,5/27/2026,6:30 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Sara Fiser,,,,,
+Passage Press: sighswoon/Gabi Abrao,DEFINITE,5/28/2026,7:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,"PubKey Attic, The Banq",80,,Matt Easton,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,5/30/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+DJ Party with Drew,TENTATIVE,5/30/2026,9:00 PM,1:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Drew Armstrong,,,,,
+Nick Bailey / Comedy Show,TENTATIVE,5/31/2026,3:00 PM,5:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,Nick Bailey,,,,,
+Cryptomondays - BTC,DEFINITE,6/1/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+NYC Trivia League,DEFINITE,6/2/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+So Far Sounds,TENTATIVE,6/3/2026,6:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Ross Newhouse,,,,,
+Stand-up Show,DEFINITE,6/5/2026,7:30 PM,9:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lizzie High,,,,,
+Citrea / Fayza,DEFINITE,6/8/2026,6:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,"PubKey Attic, The Banq",80,,Feyza Solmaz,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,6/9/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+Birthday party,PROSPECT,6/12/2026,8:30 PM,11:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Ann Scott,,,,,
+Birthday,PROSPECT,6/13/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,30,,tsetan Donkerd,,,,,
+NYC Trivia League,DEFINITE,6/16/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+Adrien + Regina / Wedding Welcome Drinks,DEFINITE,6/19/2026,7:30 PM,9:30 PM,PubKey - DC,On-Premise Event,Ballroom,70,,Adrien Inman,,,,,
+One Up!,DEFINITE,6/19/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+NYC Trivia League,DEFINITE,6/23/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+John Campbell / Passage Press,DEFINITE,6/23/2026,8:00 PM,12:00 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",150,,John Campbell,,,,,
+Birthday Party,PROSPECT,6/27/2026,8:00 PM,11:00 PM,PubKey - NYC,On-Premise Event,The Banq,20,,Emma Scott,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,6/27/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Maddie Golodner / Birthday,TENTATIVE,6/27/2026,9:30 PM,12:30 AM,PubKey - NYC,On-Premise Event,PubKey Attic,37,,Maddie Golodner,,,,,
+NYC Trivia League,DEFINITE,6/30/2026,7:00 PM,8:30 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Cullen  Shaw,,,,,
+PubKey En Espanol / Jhonny Fuego,DEFINITE,7/11/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Jhonny Fuego,,,,,
+Cryptomondays - BTC,DEFINITE,7/13/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,7/14/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+One Up!,DEFINITE,7/17/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+GonzoFest,DEFINITE,7/19/2026,9:00 PM,3:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Kent Fielding,,,,,
+Cryptomondays - BTC,DEFINITE,7/20/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+DMV Women & Bitcoin,DEFINITE,7/21/2026,6:30 PM,8:30 PM,PubKey - DC,On-Premise Event,Ballroom,,,Bhavna Patel,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,7/25/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Cryptomondays - BTC,DEFINITE,8/10/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,8/11/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+Nicole Menkart / Surprise Birthday,DEFINITE,8/15/2026,6:00 PM,9:00 PM,PubKey - DC,On-Premise Event,Pub,30,,Nicole Menkart,,,,,
+Isabella Party,TENTATIVE,8/15/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Isabella F,,,,,
+Cryptomondays - BTC,DEFINITE,8/17/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Rothie Banzuelo / Surprise Birthday!,PROSPECT,8/22/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Rothie Banzuelo,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,8/29/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,9/8/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+Chardonnay Boger / Panel,DEFINITE,9/14/2026,6:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Chardonnay Boger,,,,,
+DMV Women & Bitcoin,DEFINITE,9/15/2026,6:30 PM,8:30 PM,PubKey - DC,On-Premise Event,Ballroom,,,Bhavna Patel,,,,,
+One Up!,DEFINITE,9/18/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Cryptomondays - BTC,DEFINITE,9/21/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Bitcoin Fest with BPI x PK,TENTATIVE,9/22/2026,9:00 AM,10:00 AM,PubKey - DC,On-Premise Event,Ballroom,200,,Thomas Pacchia,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,9/26/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Stephanie Piscopo / Wedding After party,PROSPECT,9/26/2026,11:00 PM,2:00 AM,PubKey - NYC,On-Premise Event,PubKey Attic,40,,Stephanie Piscopo,,,,,
+Graham Ross Birthday,PROSPECT,10/3/2026,9:00 PM,12:00 AM,PubKey - NYC,On-Premise Event,"PubKey Attic, The Banq",,,Michael D'Agostino,,,,,
+Cryptomondays - BTC,DEFINITE,10/12/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,10/13/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+One Up!,DEFINITE,10/16/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Cryptomondays - BTC,DEFINITE,10/19/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,10/31/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Wedding Pre-Drinks,PROSPECT,11/6/2026,8:30 PM,10:30 PM,PubKey - DC,On-Premise Event,Ballroom,100,,Christian Martinez,,,,,
+Cryptomondays - BTC,DEFINITE,11/9/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,11/10/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+Sean Chang / After Party,DEFINITE,11/14/2026,10:30 PM,2:00 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",60,,Sean Chang,,,,,
+Cryptomondays - BTC,DEFINITE,11/16/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+DMV Women & Bitcoin,DEFINITE,11/17/2026,6:30 PM,8:30 PM,PubKey - DC,On-Premise Event,Ballroom,,,Bhavna Patel,,,,,
+One Up!,DEFINITE,11/20/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,11/28/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Introduction HH / Erika Ziolkowski,DEFINITE,12/8/2026,7:00 PM,9:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,50,,Erika Ziolkowski,,,,,
+Cryptomondays - BTC,DEFINITE,12/14/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+One Up!,DEFINITE,12/18/2026,8:00 PM,10:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,,,Courtney Taback,,,,,
+Cryptomondays - BTC,DEFINITE,12/21/2026,6:00 PM,8:00 PM,PubKey - NYC,On-Premise Event,PubKey Attic,60,,Lou Kerner,,,,,
+Firehouse Fridays / Country Dancing,DEFINITE,12/26/2026,8:30 PM,12:30 AM,PubKey - DC,On-Premise Event,"Reception Bar, Ballroom",275,,Tim Landis,,,,,
+Grand Total,,,,,,,,8783,,,\$0.00,\$0.00,\$0.00,\$0.00,\$0.00
+`;
+
+/* ---- Load CSV files ---- */
+function loadCSVData() {
+    try {
+        var items = [];
+        [CSV_JAN_APR, CSV_APR_FORWARD].forEach(function(text) {
+            var rows = parseCSV(text);
+            rows.forEach(function(row) {
+                var item = csvRowToItem(row);
+                if (item) items.push(item);
+            });
+        });
+
+        // Deduplicate by name+start
+        var seen = {};
+        allItems = items.filter(function(item) {
+            var key = item.name + '|' + item.start;
+            if (seen[key]) return false;
+            seen[key] = true;
+            return true;
+        });
+
+        allItems.sort(function(a, b) { return a.start.localeCompare(b.start); });
+
+        document.getElementById("badge").textContent = allItems.length + " events";
+        document.getElementById("statTotal").textContent = allItems.length;
+        document.getElementById("statSub").textContent = "across all locations";
+        populateRoomFilter();
+        renderWeek();
+    } catch (err) {
+        document.getElementById("errorBanner").textContent = "Failed to load CSV: " + err.message;
+        document.getElementById("errorBanner").style.display = "block";
+    }
+}
+
+/* ---- Helpers ---- */
 function getWeekRange(offset) {
-    const now = new Date();
-    const day = now.getDay();
-    const monday = new Date(now);
+    var now = new Date();
+    var day = now.getDay();
+    var monday = new Date(now);
     monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1) + (offset * 7));
     monday.setHours(0, 0, 0, 0);
-    const sunday = new Date(monday);
+    var sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
     sunday.setHours(23, 59, 59, 999);
     return { start: monday, end: sunday };
@@ -368,201 +1174,208 @@ function getWeekRange(offset) {
 
 function fmt(d) { return d.toISOString().slice(0, 10); }
 
+var _timeFmt = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+var _dateFmt = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric" });
+
 function fmtTime(iso) {
     if (!iso) return "";
-    const d = new Date(iso);
-    return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
+    return _timeFmt.format(new Date(iso)).toLowerCase();
 }
 
 function fmtDate(iso) {
     if (!iso) return "";
-    const d = new Date(iso);
-    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    return _dateFmt.format(new Date(iso));
 }
 
+var _escEl = document.createElement("div");
 function esc(s) {
-    const d = document.createElement("div");
-    d.textContent = s;
-    return d.innerHTML;
-}
-
-async function refreshData() {
-    const { start, end } = getWeekRange(weekOffset);
-    const opts = { month: "long", day: "numeric" };
-    const endOpts = { month: "long", day: "numeric", year: "numeric" };
-    document.getElementById("weekLabel").textContent =
-        start.toLocaleDateString("en-US", opts) + " \u2013 " + end.toLocaleDateString("en-US", endOpts);
-
-    try {
-        const resp = await fetch("/api/events?start=" + fmt(start) + "&end=" + fmt(end));
-        if (!resp.ok) {
-            const ct = resp.headers.get("content-type") || "";
-            if (resp.status === 401 || resp.status === 403 || ct.includes("text/html")) {
-                throw new Error("Authentication required — please reload the page and sign in");
-            }
-            throw new Error("HTTP " + resp.status);
-        }
-        const data = await resp.json();
-        allItems = data.items || [];
-
-        if (data.demo) {
-            document.getElementById("demoBanner").style.display = "block";
-            document.getElementById("badge").textContent = "DEMO";
-        } else {
-            document.getElementById("demoBanner").style.display = "none";
-            document.getElementById("badge").textContent = allItems.length + " events";
-        }
-        document.getElementById("errorBanner").style.display = "none";
-        populateRoomFilter();
-        render();
-
-        const now = new Date();
-        document.getElementById("lastRefresh").textContent =
-            "Updated " + now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-    } catch (err) {
-        document.getElementById("errorBanner").textContent = "Failed to load: " + err.message;
-        document.getElementById("errorBanner").style.display = "block";
-    }
+    _escEl.textContent = s;
+    return _escEl.innerHTML;
 }
 
 function getFiltered() {
     return allItems.filter(function(item) {
         if (activeStatusFilter !== "all" && item.status !== activeStatusFilter) return false;
+        if (activeLocationFilter !== "all" && item.locKey !== activeLocationFilter) return false;
         if (activeRoomFilter !== "all" && item.room !== activeRoomFilter) return false;
         return true;
     });
 }
 
+function getWeekItems(items, range) {
+    return items.filter(function(item) {
+        var d = new Date(item.start);
+        return d >= range.start && d <= range.end;
+    });
+}
+
 function populateRoomFilter() {
-    const rooms = [...new Set(allItems.map(function(i) { return i.room; }).filter(Boolean))].sort();
-    const sel = document.getElementById("roomFilter");
-    const current = sel.value;
+    var rooms = [];
+    var seen = {};
+    allItems.forEach(function(i) {
+        if (i.room && !seen[i.room]) { rooms.push(i.room); seen[i.room] = true; }
+    });
+    rooms.sort();
+    var sel = document.getElementById("roomFilter");
+    var current = sel.value;
     sel.innerHTML = '<option value="all">All Rooms</option>';
     rooms.forEach(function(r) {
-        const opt = document.createElement("option");
+        var opt = document.createElement("option");
         opt.value = r; opt.textContent = r;
         sel.appendChild(opt);
     });
-    sel.value = rooms.includes(current) ? current : "all";
+    sel.value = rooms.indexOf(current) !== -1 ? current : "all";
     activeRoomFilter = sel.value;
 }
 
+/* ---- Render ---- */
+function renderWeek() {
+    var range = getWeekRange(weekOffset);
+    var opts = { month: "long", day: "numeric" };
+    var endOpts = { month: "long", day: "numeric", year: "numeric" };
+    document.getElementById("weekLabel").textContent =
+        range.start.toLocaleDateString("en-US", opts) + " \u2013 " + range.end.toLocaleDateString("en-US", endOpts);
+
+    var now = new Date();
+    document.getElementById("lastRefresh").textContent =
+        now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+    render();
+}
+
 function render() {
-    const items = getFiltered();
-    renderStats(items);
-    renderCalendar(items);
+    var range = getWeekRange(weekOffset);
+    var items = getFiltered();
+    var weekItems = getWeekItems(items, range);
+    document.getElementById("statTotal").textContent = weekItems.length;
+    var nycCount = 0, dcCount = 0, guestSum = 0;
+    weekItems.forEach(function(item) {
+        if (item.locKey === 'nyc') nycCount++;
+        else if (item.locKey === 'dc') dcCount++;
+        guestSum += item.guest_count || 0;
+    });
+    document.getElementById("statNYC").textContent = nycCount;
+    document.getElementById("statDC").textContent = dcCount;
+    document.getElementById("statGuests").textContent = guestSum.toLocaleString();
+    renderCalendar(weekItems, range);
     renderUpcoming(items);
-    renderRooms(items);
+    renderRooms(weekItems);
 }
 
-function renderStats(items) {
-    const confirmed = items.filter(function(i) { return i.status === "confirmed" || i.status === "definite"; }).length;
-    const tentative = items.filter(function(i) { return i.status === "tentative" || i.status === "prospect"; }).length;
-    const guests = items.reduce(function(sum, i) { return sum + (parseInt(i.guest_count) || 0); }, 0);
-    const rooms = new Set(items.map(function(i) { return i.room; }).filter(Boolean)).size;
+var _dayDateFmt = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
 
-    document.getElementById("statTotal").textContent = items.length;
-    document.getElementById("statConfirmed").textContent = confirmed;
-    document.getElementById("statTentative").textContent = tentative;
-    document.getElementById("statGuests").textContent = guests.toLocaleString();
-    document.getElementById("statRooms").textContent = rooms;
-}
-
-function renderCalendar(items) {
-    const { start } = getWeekRange(weekOffset);
-    const today = fmt(new Date());
-    const grouped = {};
-    for (let i = 0; i < 7; i++) {
-        const d = new Date(start);
-        d.setDate(start.getDate() + i);
+function renderCalendar(items, range) {
+    var today = fmt(new Date());
+    var grouped = {};
+    for (var i = 0; i < 7; i++) {
+        var d = new Date(range.start);
+        d.setDate(range.start.getDate() + i);
         grouped[fmt(d)] = [];
     }
     items.forEach(function(item) {
-        const key = (item.start || "").slice(0, 10);
+        var key = item.start.slice(0, 10);
         if (grouped[key]) grouped[key].push(item);
     });
 
-    let html = '<div class="calendar">';
-    const dayNames = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    // Check if entire week is empty
+    if (items.length === 0) {
+        document.getElementById("calendarContainer").innerHTML =
+            '<div class="calendar">' +
+            '<div class="empty-week">' +
+            '<img src="Untitled-1.png" alt="" loading="lazy">' +
+            '<div class="empty-text">No events this week</div>' +
+            '<div class="empty-sub">Try a different week or adjust your filters</div>' +
+            '</div></div>';
+        return;
+    }
 
-    for (let i = 0; i < 7; i++) {
-        const d = new Date(start);
-        d.setDate(start.getDate() + i);
-        const key = fmt(d);
-        const isToday = key === today;
-        const dayItems = (grouped[key] || []).sort(function(a, b) { return (a.start||"").localeCompare(b.start||""); });
+    var parts = ['<div class="calendar">'];
+    var dayNames = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
-        html += '<div class="day-col' + (isToday ? ' today' : '') + '">';
-        html += '<div class="day-head">';
-        html += '<div class="dname">' + dayNames[i] + '</div>';
-        html += '<div class="ddate">' + d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + '</div>';
-        // day count removed
-        html += '</div><div class="day-body">';
+    for (var i = 0; i < 7; i++) {
+        var d = new Date(range.start);
+        d.setDate(range.start.getDate() + i);
+        var key = fmt(d);
+        var isToday = key === today;
+        var dayItems = (grouped[key] || []).sort(function(a, b) { return a.start.localeCompare(b.start); });
+
+        var count = dayItems.length;
+        parts.push('<div class="day-col', isToday ? ' today' : '', '">',
+            '<div class="day-head">',
+            '<div class="day-head-left">',
+            '<div class="dname">', dayNames[i], '</div>',
+            '<div class="ddate">', _dayDateFmt.format(d), '</div>',
+            '</div>',
+            count > 0 ? '<span class="day-count">' + count + '</span>' : '',
+            '</div><div class="day-body">');
 
         if (dayItems.length === 0) {
-            html += '<div class="empty">No events</div>';
+            parts.push('<div class="empty">\u2014</div>');
         } else {
-            dayItems.forEach(function(item) {
-                const tc = item.type || "event";
-                const sc = (item.status || "").replace(/\s+/g, "-");
-                const ts = fmtTime(item.start);
-                const te = fmtTime(item.end);
-                const td = te ? ts + " \u2013 " + te : ts;
+            for (var j = 0; j < dayItems.length; j++) {
+                var item = dayItems[j];
+                var isDC = item.locKey === 'dc';
+                var sc = item.status.replace(/\s+/g, "-");
+                var ts = fmtTime(item.start);
+                var te = fmtTime(item.end);
 
-                html += '<div class="ev-card ' + tc + '">';
-                html += '<div class="ev-badges">';
-                html += '<span class="type-tag ' + tc + '">' + esc(tc) + '</span>';
-                if (item.status) html += '<span class="status-tag ' + sc + '">' + esc(item.status) + '</span>';
-                html += '</div>';
-                html += '<div class="ev-name">' + esc(item.name) + '</div>';
-                html += '<div class="ev-time">' + td + '</div>';
-                if (item.room) html += '<div class="ev-meta">' + esc(item.room) + '</div>';
-                if (item.contact) html += '<div class="ev-meta">' + esc(item.contact) + '</div>';
-                if (item.guest_count) html += '<div class="ev-meta">' + item.guest_count + ' guests</div>';
-                html += '</div>';
-            });
+                parts.push('<div class="ev-card', isDC ? ' dc' : '', '">',
+                    '<div class="ev-badges">',
+                    '<span class="loc-tag ', item.locKey, '">', isDC ? 'DC' : 'NYC', '</span>');
+                if (item.status) parts.push('<span class="status-tag ', sc, '">', esc(item.status), '</span>');
+                parts.push('</div>',
+                    '<div class="ev-name">', esc(item.name), '</div>',
+                    '<div class="ev-time">', te ? ts + " \u2013 " + te : ts, '</div>');
+                if (item.room) parts.push('<div class="ev-meta">', esc(item.room), '</div>');
+                if (item.guest_count) parts.push('<div class="ev-meta">', item.guest_count, ' guests</div>');
+                parts.push('</div>');
+            }
         }
-        html += '</div></div>';
+        parts.push('</div></div>');
     }
-    html += '</div>';
-    document.getElementById("calendarContainer").innerHTML = html;
+    parts.push('</div>');
+    document.getElementById("calendarContainer").innerHTML = parts.join('');
 }
 
 function renderUpcoming(items) {
-    const now = new Date().toISOString();
-    const upcoming = items
-        .filter(function(i) { return (i.start || "") >= now.slice(0, 10); })
-        .sort(function(a, b) { return (a.start||"").localeCompare(b.start||""); })
-        .slice(0, 20);
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    var upcoming = items
+        .filter(function(i) { return new Date(i.start) >= now; })
+        .sort(function(a, b) { return a.start.localeCompare(b.start); })
+        .slice(0, 25);
 
-    const tbody = document.getElementById("upcomingBody");
+    var tbody = document.getElementById("upcomingBody");
+    var countEl = document.getElementById("upcomingCount");
+    if (countEl) countEl.textContent = upcoming.length ? upcoming.length + ' events' : '';
     if (upcoming.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:24px;">No upcoming events this week</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-table-cell">No upcoming events with current filters</td></tr>';
         return;
     }
     tbody.innerHTML = upcoming.map(function(item) {
-        const sc = (item.status || "").replace(/\s+/g, "-");
+        var sc = item.status.replace(/\s+/g, "-");
         return '<tr>' +
             '<td>' + fmtDate(item.start) + '</td>' +
-            '<td>' + fmtTime(item.start) + (item.end ? " \u2013 " + fmtTime(item.end) : "") + '</td>' +
+            '<td class="time-cell">' + fmtTime(item.start) + (item.end ? " \u2013 " + fmtTime(item.end) : "") + '</td>' +
             '<td class="name-cell">' + esc(item.name) + '</td>' +
-            '<td><span class="status-tag ' + sc + '">' + esc(item.status || "\u2014") + '</span></td>' +
+            '<td><span class="status-tag ' + sc + '">' + esc(item.status) + '</span></td>' +
+            '<td><span class="loc-tag ' + item.locKey + '">' + (item.locKey === 'dc' ? 'DC' : 'NYC') + '</span></td>' +
             '<td>' + esc(item.room || "\u2014") + '</td>' +
             '<td>' + esc(item.contact || "\u2014") + '</td>' +
-            '<td>' + (item.guest_count || "\u2014") + '</td>' +
+            '<td class="guest-cell">' + (item.guest_count || "\u2014") + '</td>' +
             '</tr>';
     }).join("");
 }
 
 function renderRooms(items) {
-    const rooms = {};
+    var rooms = {};
     items.forEach(function(item) {
         if (item.room) rooms[item.room] = (rooms[item.room] || 0) + 1;
     });
-    const sorted = Object.entries(rooms).sort(function(a, b) { return b[1] - a[1]; });
-    const grid = document.getElementById("roomsGrid");
+    var sorted = Object.entries(rooms).sort(function(a, b) { return b[1] - a[1]; });
+    var grid = document.getElementById("roomsGrid");
     if (sorted.length === 0) {
-        grid.innerHTML = '<div style="color:#aaa;font-size:14px;">No room data</div>';
+        grid.innerHTML = '<div class="empty-table-cell">No room bookings this week</div>';
         return;
     }
     grid.innerHTML = sorted.map(function(pair) {
@@ -574,18 +1387,30 @@ function renderRooms(items) {
 function changeWeek(dir) {
     if (dir === 0) weekOffset = 0;
     else weekOffset += dir;
-    refreshData();
+    renderWeek();
 }
 
+/* ---- Filter listeners ---- */
 document.getElementById("statusFilter").addEventListener("change", function() {
     activeStatusFilter = this.value; render();
+});
+document.getElementById("locationFilter").addEventListener("change", function() {
+    activeLocationFilter = this.value; render();
 });
 document.getElementById("roomFilter").addEventListener("change", function() {
     activeRoomFilter = this.value; render();
 });
 
-refreshData();
-setInterval(refreshData, 5 * 60 * 1000);
+/* ---- Keyboard nav ---- */
+document.addEventListener("keydown", function(e) {
+    if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+    if (e.key === "ArrowLeft") { changeWeek(-1); e.preventDefault(); }
+    else if (e.key === "ArrowRight") { changeWeek(1); e.preventDefault(); }
+    else if (e.key === "t" || e.key === "T") { changeWeek(0); }
+});
+
+/* ---- Init ---- */
+loadCSVData();
 </script>
 </body>
 </html>
