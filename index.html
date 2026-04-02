@@ -298,26 +298,6 @@ body {
             <span class="value" id="statTotal">—</span>
             <span class="sub">this week</span>
         </div>
-        <div class="stat-card green">
-            <span class="label">Confirmed</span>
-            <span class="value" id="statConfirmed">—</span>
-            <span class="sub">ready to go</span>
-        </div>
-        <div class="stat-card yellow">
-            <span class="label">Tentative</span>
-            <span class="value" id="statTentative">—</span>
-            <span class="sub">pending confirmation</span>
-        </div>
-        <div class="stat-card teal">
-            <span class="label">Expected Guests</span>
-            <span class="value" id="statGuests">—</span>
-            <span class="sub">total headcount</span>
-        </div>
-        <div class="stat-card purple">
-            <span class="label">Rooms Booked</span>
-            <span class="value" id="statRooms">—</span>
-            <span class="sub">unique spaces</span>
-        </div>
     </div>
 
     <div class="week-nav">
@@ -456,16 +436,7 @@ function render() {
 }
 
 function renderStats(items) {
-    const confirmed = items.filter(function(i) { return i.status === "confirmed" || i.status === "definite"; }).length;
-    const tentative = items.filter(function(i) { return i.status === "tentative" || i.status === "prospect"; }).length;
-    const guests = items.reduce(function(sum, i) { return sum + (parseInt(i.guest_count) || 0); }, 0);
-    const rooms = new Set(items.map(function(i) { return i.room; }).filter(Boolean)).size;
-
     document.getElementById("statTotal").textContent = items.length;
-    document.getElementById("statConfirmed").textContent = confirmed;
-    document.getElementById("statTentative").textContent = tentative;
-    document.getElementById("statGuests").textContent = guests.toLocaleString();
-    document.getElementById("statRooms").textContent = rooms;
 }
 
 function renderCalendar(items) {
