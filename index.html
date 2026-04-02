@@ -33,6 +33,11 @@
     --red-dim: rgba(239, 68, 68, 0.08);
     --red-glow: rgba(239, 68, 68, 0.15);
 
+    --accent: #f59e0b;
+    --accent-soft: #fbbf24;
+    --accent-dim: rgba(245, 158, 11, 0.08);
+    --accent-glow: rgba(245, 158, 11, 0.15);
+
     --orange: #f59e0b;
     --orange-dim: rgba(245, 158, 11, 0.08);
 
@@ -64,7 +69,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-::selection { background: rgba(59, 130, 246, 0.3); }
+::selection { background: rgba(245, 158, 11, 0.3); }
 
 .sr-only {
     position: absolute; width: 1px; height: 1px;
@@ -111,7 +116,7 @@ select.filter-btn {
     background-position: right 7px center;
 }
 .filter-btn:hover { color: var(--text-secondary); background: var(--surface-raised); }
-.filter-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.filter-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .filter-btn.active { color: var(--text); border-color: var(--border); background: var(--surface); }
 
 .refresh-ts {
@@ -177,7 +182,7 @@ select.filter-btn {
     transition: all 0.12s var(--ease);
 }
 .week-btn:hover { border-color: var(--border); color: var(--text-secondary); background: var(--surface); }
-.week-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+.week-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 .week-label {
     font-family: 'JetBrains Mono', monospace;
@@ -373,7 +378,7 @@ select.filter-btn {
     overflow: hidden;
     margin-bottom: 48px;
     background: var(--surface);
-    max-height: 520px;
+    max-height: 400px;
     display: flex;
     flex-direction: column;
 }
@@ -388,7 +393,7 @@ select.filter-btn {
 
 .table-wrap table {
     width: 100%; border-collapse: collapse;
-    font-size: 12px; table-layout: fixed;
+    font-size: 11px; table-layout: fixed;
 }
 .table-wrap col.c-date    { width: 13%; }
 .table-wrap col.c-time    { width: 15%; }
@@ -399,7 +404,7 @@ select.filter-btn {
 .table-wrap col.c-contact { width: 13%; }
 
 .table-wrap th {
-    text-align: left; padding: 10px 14px;
+    text-align: left; padding: 7px 12px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px; font-weight: 500;
     text-transform: uppercase; letter-spacing: 1px;
@@ -410,7 +415,7 @@ select.filter-btn {
 }
 
 .table-wrap td {
-    padding: 9px 14px;
+    padding: 6px 12px;
     border-bottom: 1px solid var(--border-light);
     color: var(--text-secondary);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
