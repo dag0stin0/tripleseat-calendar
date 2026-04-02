@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tripleseat Weekly Calendar — March 30 – April 5, 2026</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f0f2f5;
+        color: #1a1a2e;
+        padding: 24px;
+        min-height: 100vh;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+    .header h1 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 6px;
+    }
+
+    .header .week-range {
+        font-size: 16px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .header .summary {
+        font-size: 13px;
+        color: #888;
+        margin-top: 4px;
+    }
+
+    .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .day-column {
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .day-column.today {
+        box-shadow: 0 0 0 2px #4361ee, 0 2px 8px rgba(67,97,238,0.15);
+    }
+
+    .day-header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid #eee;
+        background: #fafbfc;
+    }
+
+    .today .day-header {
+        background: #4361ee;
+        border-bottom-color: #4361ee;
+    }
+
+    .today .day-header .day-name,
+    .today .day-header .day-date,
+    .today .day-header .day-count {
+        color: #fff !important;
+    }
+
+    .day-name {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #888;
+    }
+
+    .day-date {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-top: 2px;
+    }
+
+    .day-count {
+        font-size: 11px;
+        color: #aaa;
+        margin-top: 2px;
+    }
+
+    .day-body {
+        padding: 10px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .empty {
+        color: #ccc;
+        font-size: 13px;
+        text-align: center;
+        padding: 20px 0;
+        font-style: italic;
+    }
+
+    .item {
+        padding: 10px 12px;
+        border-radius: 8px;
+        border-left: 3px solid #4361ee;
+        background: #f8f9ff;
+        font-size: 13px;
+    }
+
+    .item.booking {
+        border-left-color: #2ec4b6;
+        background: #f0faf9;
+    }
+
+    .item-header {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .type-badge {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: #e8edff;
+        color: #4361ee;
+    }
+
+    .type-badge.booking {
+        background: #d4f5f0;
+        color: #1a9988;
+    }
+
+    .status {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: #f0f0f0;
+        color: #666;
+    }
+
+    .status.confirmed, .status.definite {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status.tentative, .status.prospect {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status.cancelled, .status.closed-lost {
+        background: #f8d7da;
+        color: #721c24;
+        text-decoration: line-through;
+    }
+
+    .item-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1a1a2e;
+        margin-bottom: 4px;
+    }
+
+    .time {
+        color: #555;
+        font-size: 12px;
+        margin-bottom: 3px;
+    }
+
+    .location, .contact, .guests {
+        font-size: 12px;
+        color: #777;
+        margin-top: 2px;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 11px;
+        color: #bbb;
+    }
+
+    /* Print styles */
+    @media print {
+        body {
+            background: #fff;
+            padding: 12px;
+        }
+        .calendar {
+            gap: 4px;
+        }
+        .day-column {
+            box-shadow: none;
+            border: 1px solid #ddd;
+            min-height: auto;
+        }
+        .day-column.today {
+            box-shadow: none;
+            border: 2px solid #4361ee;
+        }
+        .item {
+            page-break-inside: avoid;
+        }
+    }
+
+    /* Responsive — stack on small screens */
+    @media (max-width: 900px) {
+        .calendar {
+            grid-template-columns: 1fr;
+            max-width: 500px;
+        }
+        .day-column {
+            min-height: auto;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="header">
+        <h1>Tripleseat Weekly Calendar</h1>
+        <div class="week-range">March 30 – April 5, 2026</div>
+        <div class="summary">10 total events &amp; bookings this week</div>
+    </div>
+    <div class="calendar">
+        
+        <div class="day-column">
+            <div class="day-header">
+                <div class="day-name">Monday</div>
+                <div class="day-date">Mar 30</div>
+                <div class="day-count">1 event</div>
+            </div>
+            <div class="day-body">
+                
+                <div class="item booking">
+                    <div class="item-header">
+                        <span class="type-badge booking">Booking</span>
+                        <span class="status confirmed">confirmed</span>
+                    </div>
+                    <div class="item-name">Johnson Wedding Reception</div>
+                    <div class="time">10:00 am – 2:00 pm</div>
+                    <div class="location">📍 The Grand Venue · Grand Ballroom</div>
+                    <div class="contact">👤 Sarah Johnson</div>
+                    <div class="guests">👥 150 guests</div>
+                </div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header">
+                <div class="day-name">Tuesday</div>
+                <div class="day-date">Mar 31</div>
+                <div class="day-count">2 events</div>
+            </div>
+            <div class="day-body">
+                
+                <div class="item event">
+                    <div class="item-header">
+                        <span class="type-badge event">Event</span>
+                        <span class="status confirmed">confirmed</span>
+                    </div>
+                    <div class="item-name">Staff Training Lunch</div>
+                    <div class="time">12:00 pm – 1:30 pm</div>
+                    <div class="location">📍 The Grand Venue · Conference Room A</div>
+                    <div class="contact">👤 HR Team</div>
+                    <div class="guests">👥 30 guests</div>
+                </div>
+                <div class="item event">
+                    <div class="item-header">
+                        <span class="type-badge event">Event</span>
+                        <span class="status confirmed">confirmed</span>
+                    </div>
+                    <div class="item-name">Tech Corp Annual Dinner</div>
+                    <div class="time">6:00 pm – 10:00 pm</div>
+                    <div class="location">📍 The Grand Venue · Rooftop Terrace</div>
+                    <div class="contact">👤 Mike Chen</div>
+                    <div class="guests">👥 80 guests</div>
+                </div>
+            </div>
+        </div>
+        <div class="day-column today">
+            <div class="day-header">
+                <div class="day-name">Wednesday</div>
+                <div class="day-date">Apr 1</div>
+                <div class="day-count">2 events</div>
+            </div>
+            <div class="day-body">
+                
+                <div class="item event">
+                    <div class="item-header">
+                        <span class="type-badge event">Event</span>
+                        <span class="status tentative">tentative</span>
+                    </div>
+                    <div class="item-name">Birthday Celebration — Martinez</div>
+                    <div class="time">12:00 pm – 3:00 pm</div>
+                    <div class="location">📍 The Grand Venue · Private Dining Room</div>
+                    <div class="contact">👤 Ana Martinez</div>
+                    <div class="guests">👥 35 guests</div>
+                </div>
+                <div class="item booking">
+                    <div class="item-header">
+                        <span class="type-badge booking">Booking</span>
+                        <span class="status confirmed">confirmed</span>
+                    </div>
+                    <div class="item-name">Charity Gala 2026</div>
+                    <div class="time">5:00 pm – 11:00 pm</div>
+                    <div class="location">📍 The Grand Venue · Grand Ballroom</div>
+                    <div class="contact">👤 David Park</div>
+                    <div class="guests">👥 200 guests</div>
+                </div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header">
+                <div class="day-name">Thursday</div>
+                <div class="day-date">Apr 2</div>
+                <div class="day-count">2 events</div>
+            </div>
+            <div class="day-body">
+                
+                <div class="item event">
+                    <div class="item-header">
+                        <span class="type-badge event">Event</span>
+                        <span class="status prospect">prospect</span>
+                    </div>
+                    <div class="item-name">Corporate Lunch — Acme Inc</div>
+                    <div class="time">11:30 am – 1:30 pm</div>
+                    <div class="location">📍 The Grand Venue · Garden Room</div>
+                    <div class="contact">👤 Lisa Wong</div>
+                    <div class="guests">👥 25 guests</div>
+                </div>
+                <div class="item event">
+                    <div class="item-header">
+                        <span class="type-badge event">Event</span>
+                        <span class="status confirmed">confirmed</span>
+                    </div>
+                    <div class="item-name">Product Launch Happy Hour</div>
+                    <div class="time">5:00 pm – 8:00 pm</div>
+                    <div class="location">📍 The Grand Venue · Lounge Bar</div>
+                    <div class="contact">👤 Tom Baker</div>
+                    <div class="guests">👥 60 guests</div>
+                </div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header">
+                <div class="day-name">Friday</div>
+                <div class="day-date">Apr 3</div>
+                <div class="day-count">1 event</div>
+            </div>
+            <div class="day-body">
+                
+                <div class="item event">
+                    <div class="item-header">
+                        <span class="type-badge event">Event</span>
+                        <span class="status confirmed">confirmed</span>
+                    </div>
+                    <div class="item-name">Rehearsal Dinner — Kim/Patel</div>
+                    <div class="time">6:30 pm – 9:00 pm</div>
+                    <div class="location">📍 The Grand Venue · Wine Cellar</div>
+                    <div class="contact">👤 Priya Patel</div>
+                    <div class="guests">👥 40 guests</div>
+                </div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header">
+                <div class="day-name">Saturday</div>
+                <div class="day-date">Apr 4</div>
+                <div class="day-count">1 event</div>
+            </div>
+            <div class="day-body">
+                
+                <div class="item booking">
+                    <div class="item-header">
+                        <span class="type-badge booking">Booking</span>
+                        <span class="status tentative">tentative</span>
+                    </div>
+                    <div class="item-name">Wine Tasting Evening</div>
+                    <div class="time">7:00 pm – 9:30 pm</div>
+                    <div class="location">📍 The Grand Venue · Wine Cellar</div>
+                    <div class="contact">👤 James Noir</div>
+                    <div class="guests">👥 20 guests</div>
+                </div>
+            </div>
+        </div>
+        <div class="day-column">
+            <div class="day-header">
+                <div class="day-name">Sunday</div>
+                <div class="day-date">Apr 5</div>
+                <div class="day-count">1 event</div>
+            </div>
+            <div class="day-body">
+                
+                <div class="item booking">
+                    <div class="item-header">
+                        <span class="type-badge booking">Booking</span>
+                        <span class="status tentative">tentative</span>
+                    </div>
+                    <div class="item-name">Sunday Brunch — Book Club</div>
+                    <div class="time">10:00 am – 12:00 pm</div>
+                    <div class="location">📍 The Grand Venue · Patio</div>
+                    <div class="contact">👤 Rachel Green</div>
+                    <div class="guests">👥 15 guests</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        Generated April 1, 2026 at 7:56 PM · Powered by Tripleseat API
+    </div>
+</body>
+</html>
