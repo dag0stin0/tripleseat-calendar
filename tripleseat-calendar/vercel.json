@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/api/events", "destination": "/api/events" }
+  ],
+  "builds": [
+    { "src": "api/events.py", "use": "@vercel/python" },
+    { "src": "index.html", "use": "@vercel/static" }
+  ]
+}
