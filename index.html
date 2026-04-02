@@ -63,14 +63,8 @@ body {
 }
 
 .topbar-left { display: flex; align-items: center; gap: 12px; }
-.logo-img { height: 24px; width: auto; filter: invert(1); opacity: 0.85; }
+.logo-img { height: 24px; width: auto; opacity: 0.85; }
 
-.topbar .badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 500; padding: 2px 7px;
-    border-radius: 4px; background: var(--orange-dim); color: var(--orange);
-    letter-spacing: 0.3px;
-}
 
 .topbar-right { display: flex; align-items: center; gap: 6px; }
 
@@ -99,7 +93,7 @@ body {
 
 /* ---- Stats Row ---- */
 .stats-row {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
     margin-bottom: 32px;
 }
 
@@ -355,8 +349,7 @@ body {
 .table-wrap col.col-status { width: 9%; }
 .table-wrap col.col-loc { width: 7%; }
 .table-wrap col.col-room { width: 16%; }
-.table-wrap col.col-contact { width: 13%; }
-.table-wrap col.col-guests { width: 7%; }
+.table-wrap col.col-contact { width: 15%; }
 
 .table-wrap th {
     text-align: left; padding: 10px 16px; font-size: 10px; font-weight: 500;
@@ -375,10 +368,6 @@ body {
 .table-wrap td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .table-wrap .name-cell { font-weight: 600; color: var(--text); }
 .table-wrap .time-cell { font-family: 'JetBrains Mono', monospace; font-size: 11px; white-space: nowrap; }
-.table-wrap .guest-cell {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 500; text-align: right;
-}
 
 /* ---- Rooms ---- */
 .rooms-grid {
@@ -448,7 +437,7 @@ body {
     .ev-card .ev-name { font-size: 11px; }
     .ev-card .ev-time { font-size: 9px; }
     .ev-card .ev-badges { display: none; }
-    .stats-row { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
 }
 
 /* ---- Responsive: Tablet portrait ---- */
@@ -538,7 +527,7 @@ body {
     }
     body { background: #fff; color: #111; }
     .topbar { position: relative; backdrop-filter: none; -webkit-backdrop-filter: none; background: #fff; }
-    .logo-img { filter: none; }
+    .logo-img { filter: invert(1); }
     .day-col { min-height: auto; }
     .ev-card { break-inside: avoid; box-shadow: none; }
     .kb-hint { display: none; }
@@ -549,8 +538,7 @@ body {
 
 <nav class="topbar" aria-label="Event filters">
     <div class="topbar-left">
-        <img src="pukey_art_-09.png" alt="PubKey" class="logo-img">
-        <span class="badge" id="badge">--</span>
+        <img src="pubkey-logo.svg" alt="PubKey" class="logo-img">
     </div>
     <div class="topbar-right">
         <select id="statusFilter" aria-label="Filter by status">
@@ -591,11 +579,6 @@ body {
             <div class="value" id="statDC">&mdash;</div>
             <div class="sub">events</div>
         </div>
-        <div class="stat-card">
-            <div class="label">Guests</div>
-            <div class="value" id="statGuests">&mdash;</div>
-            <div class="sub">expected</div>
-        </div>
     </div>
 
     <div class="week-nav">
@@ -618,12 +601,12 @@ body {
             <colgroup>
                 <col class="col-date"><col class="col-time"><col class="col-event">
                 <col class="col-status"><col class="col-loc"><col class="col-room">
-                <col class="col-contact"><col class="col-guests">
+                <col class="col-contact">
             </colgroup>
             <thead>
                 <tr>
                     <th>Date</th><th>Time</th><th>Event</th>
-                    <th>Status</th><th>Location</th><th>Room</th><th>Contact</th><th class="text-right">Guests</th>
+                    <th>Status</th><th>Location</th><th>Room</th><th>Contact</th>
                 </tr>
             </thead>
             <tbody id="upcomingBody"></tbody>
@@ -676,7 +659,6 @@ function loadEvents() {
         .then(function(data) {
             allItems = (data.items || []).map(apiItemToLocal);
             allItems.sort(function(a, b) { return a.start.localeCompare(b.start); });
-            document.getElementById("badge").textContent = allItems.length + " events";
             document.getElementById("statSub").textContent = data.source === "tripleseat" ? "live from Tripleseat" : "across all locations";
             populateRoomFilter();
             renderWeek();
@@ -778,15 +760,13 @@ function render() {
     var items = getFiltered();
     var weekItems = getWeekItems(items, range);
     document.getElementById("statTotal").textContent = weekItems.length;
-    var nycCount = 0, dcCount = 0, guestSum = 0;
+    var nycCount = 0, dcCount = 0;
     weekItems.forEach(function(item) {
         if (item.locKey === 'nyc') nycCount++;
         else if (item.locKey === 'dc') dcCount++;
-        guestSum += item.guest_count || 0;
     });
     document.getElementById("statNYC").textContent = nycCount;
     document.getElementById("statDC").textContent = dcCount;
-    document.getElementById("statGuests").textContent = guestSum.toLocaleString();
     renderCalendar(weekItems, range);
     renderUpcoming(items);
     renderRooms(weekItems);
@@ -857,7 +837,6 @@ function renderCalendar(items, range) {
                     '<div class="ev-name">', esc(item.name), '</div>',
                     '<div class="ev-time">', te ? ts + " \u2013 " + te : ts, '</div>');
                 if (item.room) parts.push('<div class="ev-meta">', esc(item.room), '</div>');
-                if (item.guest_count) parts.push('<div class="ev-meta">', item.guest_count, ' guests</div>');
                 parts.push('</div>');
             }
         }
@@ -879,7 +858,7 @@ function renderUpcoming(items) {
     var countEl = document.getElementById("upcomingCount");
     if (countEl) countEl.textContent = upcoming.length ? upcoming.length + ' events' : '';
     if (upcoming.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="empty-table-cell">No upcoming events with current filters</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-table-cell">No upcoming events with current filters</td></tr>';
         return;
     }
     tbody.innerHTML = upcoming.map(function(item) {
@@ -892,7 +871,6 @@ function renderUpcoming(items) {
             '<td><span class="loc-tag ' + item.locKey + '">' + (item.locKey === 'dc' ? 'DC' : 'NYC') + '</span></td>' +
             '<td>' + esc(item.room || "\u2014") + '</td>' +
             '<td>' + esc(item.contact || "\u2014") + '</td>' +
-            '<td class="guest-cell">' + (item.guest_count || "\u2014") + '</td>' +
             '</tr>';
     }).join("");
 }
