@@ -395,7 +395,13 @@ async function refreshData() {
 
     try {
         const resp = await fetch("/api/events?start=" + fmt(start) + "&end=" + fmt(end));
-        if (!resp.ok) throw new Error("HTTP " + resp.status);
+        if (!resp.ok) {
+            const ct = resp.headers.get("content-type") || "";
+            if (resp.status === 401 || resp.status === 403 || ct.includes("text/html")) {
+                throw new Error("Authentication required — please reload the page and sign in");
+            }
+            throw new Error("HTTP " + resp.status);
+        }
         const data = await resp.json();
         allItems = data.items || [];
 
