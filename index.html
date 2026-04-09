@@ -1246,35 +1246,6 @@ select.filter-btn {
     <!-- Day view -->
     <div id="dayViewContainer" style="display:none"></div>
 
-    <!-- Upcoming -->
-    <div class="section-row">
-        <span class="section-label">Upcoming</span>
-        <span class="section-count" id="upcomingCount"></span>
-    </div>
-
-    <!-- Desktop table -->
-    <div class="table-wrap">
-        <div class="table-scroll">
-            <table>
-                <colgroup>
-                    <col class="c-date"><col class="c-time"><col class="c-event">
-                    <col class="c-status"><col class="c-loc"><col class="c-room">
-                    <col class="c-contact">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th>Date</th><th>Time</th><th>Event</th>
-                        <th>Status</th><th>Loc</th><th>Room</th><th>Contact</th>
-                    </tr>
-                </thead>
-                <tbody id="upcomingBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Mobile upcoming cards -->
-    <div class="upcoming-cards" id="upcomingCards"></div>
-
     <!-- Rooms -->
     <div class="section-row">
         <span class="section-label">Rooms This Week</span>
@@ -1503,8 +1474,6 @@ function renderAll() {
     document.getElementById("statSub").textContent =
         currentView === 'day' ? 'Today' : currentView === 'month' ? 'This Month' : 'This Week';
 
-    renderUpcoming(items);
-    renderUpcomingCards(items);
     renderRooms(viewItems || []);
 }
 
