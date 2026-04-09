@@ -304,6 +304,143 @@ select.filter-btn {
 .today-btn:focus-visible { outline: 2px solid var(--orange); outline-offset: 1px; }
 
 /* ═══════════════════════════════════════════
+   VIEW TOGGLE
+   ═══════════════════════════════════════════ */
+.view-toggle {
+    display: flex; gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 3px;
+    margin-left: auto;
+}
+.view-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 16px;
+    border: none; background: transparent;
+    color: var(--text-tertiary); cursor: pointer;
+    transition: all 0.15s var(--ease);
+    min-height: 32px;
+}
+.view-btn:hover { color: var(--text-secondary); }
+.view-btn.active {
+    background: var(--orange-dim);
+    color: var(--orange);
+    border: 1px solid rgba(232, 93, 38, 0.15);
+}
+.view-btn:focus-visible { outline: 2px solid var(--orange); outline-offset: 1px; }
+
+/* ═══════════════════════════════════════════
+   MONTH GRID
+   ═══════════════════════════════════════════ */
+.month-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-bottom: 48px;
+}
+.month-grid .mg-header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-tertiary);
+    text-align: center;
+    padding: 10px 4px;
+    background: var(--surface-raised);
+    border-bottom: 1px solid var(--border-light);
+}
+.month-grid .mg-cell {
+    min-height: 100px;
+    padding: 6px;
+    border-right: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    background: var(--surface);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+}
+.month-grid .mg-cell:nth-child(7n) { border-right: none; }
+.month-grid .mg-cell.outside {
+    background: var(--bg);
+    opacity: 0.4;
+}
+.month-grid .mg-cell.today-cell {
+    background: linear-gradient(180deg, rgba(232, 93, 38, 0.06) 0%, var(--surface) 80px);
+}
+.mg-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+    line-height: 1;
+}
+.mg-cell.today-cell .mg-date { color: var(--orange); font-weight: 600; }
+.mg-events { display: flex; flex-direction: column; gap: 2px; overflow-y: auto; flex: 1; }
+.mg-events::-webkit-scrollbar { width: 0; }
+.mg-ev {
+    font-size: 9px; font-weight: 500;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border-left: 2px solid var(--blue);
+    background: var(--blue-dim);
+    color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    line-height: 1.4;
+    cursor: default;
+}
+.mg-ev.dc { border-left-color: var(--red); background: var(--red-dim); }
+
+/* ═══════════════════════════════════════════
+   DAY VIEW
+   ═══════════════════════════════════════════ */
+.day-view {
+    margin-bottom: 48px;
+}
+.dv-header {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+}
+.dv-event {
+    display: flex; gap: 16px;
+    padding: 16px;
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--blue);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    margin-bottom: 8px;
+    transition: background 0.12s, transform 0.15s var(--ease-out-quint);
+}
+.dv-event:hover {
+    background: var(--surface-raised);
+    transform: translateY(-1px);
+}
+.dv-event.dc { border-left-color: var(--red); }
+.dv-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-secondary);
+    min-width: 110px;
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+.dv-info { flex: 1; min-width: 0; }
+.dv-name {
+    font-size: 14px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.dv-meta {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    font-size: 11px; color: var(--text-tertiary);
+}
+.dv-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* ═══════════════════════════════════════════
    CALENDAR GRID — DESKTOP (7-col)
    ═══════════════════════════════════════════ */
 .calendar {
@@ -966,9 +1103,21 @@ select.filter-btn {
     .week-btn { width: 44px; height: 44px; font-size: 20px; border-radius: var(--radius); }
     .today-btn { padding: 10px 18px; font-size: 11px; }
 
-    /* Switch: hide grid, show day list */
+    .view-btn { padding: 8px 12px; font-size: 9px; min-height: 36px; }
+
+    /* Switch: hide grid, show day list (week view) */
     .calendar { display: none !important; }
     .day-list { display: flex; }
+
+    /* Month grid mobile */
+    .month-grid { grid-template-columns: repeat(7, 1fr); }
+    .month-grid .mg-cell { min-height: 60px; padding: 4px; }
+    .mg-date { font-size: 10px; }
+    .mg-ev { font-size: 8px; padding: 1px 3px; }
+
+    /* Day view mobile */
+    .dv-event { flex-direction: column; gap: 6px; padding: 12px; }
+    .dv-time { min-width: unset; font-size: 11px; }
 
     /* Switch: hide table, show cards */
     .table-wrap { display: none !important; }
@@ -1070,21 +1219,32 @@ select.filter-btn {
         </div>
     </div>
 
-    <!-- Week nav -->
+    <!-- Nav bar -->
     <div class="week-bar">
-        <button class="week-btn" onclick="changeWeek(-1)" aria-label="Previous week">&#8249;</button>
-        <button class="week-btn" onclick="changeWeek(1)" aria-label="Next week">&#8250;</button>
+        <button class="week-btn" onclick="navigate(-1)" aria-label="Previous">&#8249;</button>
+        <button class="week-btn" onclick="navigate(1)" aria-label="Next">&#8250;</button>
         <span class="week-label" id="weekLabel"></span>
-        <button class="today-btn" onclick="changeWeek(0)">Today</button>
+        <button class="today-btn" onclick="navigate(0)">Today</button>
+        <div class="view-toggle">
+            <button class="view-btn" onclick="setView('day')" data-view="day">Day</button>
+            <button class="view-btn active" onclick="setView('week')" data-view="week">Week</button>
+            <button class="view-btn" onclick="setView('month')" data-view="month">Month</button>
+        </div>
     </div>
 
-    <!-- Calendar — desktop grid -->
+    <!-- Calendar — desktop grid (week view) -->
     <div id="calendarContainer">
         <div class="loading"><div class="spinner"></div><br>Loading events...</div>
     </div>
 
-    <!-- Calendar — mobile day list -->
+    <!-- Calendar — mobile day list (week view) -->
     <div class="day-list" id="dayListContainer"></div>
+
+    <!-- Month view -->
+    <div id="monthContainer" style="display:none"></div>
+
+    <!-- Day view -->
+    <div id="dayViewContainer" style="display:none"></div>
 
     <!-- Upcoming -->
     <div class="section-row">
@@ -1123,13 +1283,16 @@ select.filter-btn {
 </main>
 
 <div class="kb-hint" aria-hidden="true">
-    <kbd>&larr;</kbd><kbd>&rarr;</kbd> weeks &nbsp; <kbd>T</kbd> today
+    <kbd>&larr;</kbd><kbd>&rarr;</kbd> navigate &nbsp; <kbd>T</kbd> today &nbsp; <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> views
 </div>
 
 <!-- ════════ SCRIPT ════════ -->
 <script>
 var allItems = [];
 var weekOffset = 0;
+var monthOffset = 0;
+var dayOffset = 0;
+var currentView = "week";
 var activeStatusFilter = "all";
 var activeLocationFilter = "all";
 var activeRoomFilter = "all";
@@ -1240,38 +1403,114 @@ function populateRoomFilter() {
     activeRoomFilter = sel.value;
 }
 
-/* ── Render ── */
-function renderWeek() {
-    var range = getWeekRange(weekOffset);
-    var opts = { month: "short", day: "numeric" };
-    var endOpts = { month: "short", day: "numeric", year: "numeric" };
-    document.getElementById("weekLabel").textContent =
-        range.start.toLocaleDateString("en-US", opts) + " – " + range.end.toLocaleDateString("en-US", endOpts);
-    document.getElementById("lastRefresh").textContent =
-        new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-    render();
+/* ── Date Range Helpers ── */
+function getMonthRange(offset) {
+    var now = new Date();
+    var first = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+    var last = new Date(first.getFullYear(), first.getMonth() + 1, 0, 23, 59, 59, 999);
+    return { start: first, end: last };
 }
 
-function render() {
-    var range = getWeekRange(weekOffset);
-    var items = getFiltered();
-    var weekItems = getWeekItems(items, range);
+function getDayRange(offset) {
+    var now = new Date();
+    var day = new Date(now);
+    day.setDate(now.getDate() + offset);
+    day.setHours(0, 0, 0, 0);
+    var dayEnd = new Date(day);
+    dayEnd.setHours(23, 59, 59, 999);
+    return { start: day, end: dayEnd };
+}
 
+/* ── View Switching ── */
+function setView(view) {
+    currentView = view;
+    document.querySelectorAll('.view-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-view') === view);
+    });
+    renderAll();
+}
+
+function navigate(dir) {
+    if (dir === 0) {
+        weekOffset = 0; monthOffset = 0; dayOffset = 0;
+    } else if (currentView === 'week') {
+        weekOffset += dir;
+    } else if (currentView === 'month') {
+        monthOffset += dir;
+    } else if (currentView === 'day') {
+        dayOffset += dir;
+    }
+    renderAll();
+}
+
+/* ── Render ── */
+function renderAll() {
+    var items = getFiltered();
+    var range, viewItems;
+
+    if (currentView === 'week') {
+        range = getWeekRange(weekOffset);
+        var opts = { month: "short", day: "numeric" };
+        var endOpts = { month: "short", day: "numeric", year: "numeric" };
+        document.getElementById("weekLabel").textContent =
+            range.start.toLocaleDateString("en-US", opts) + " \u2013 " + range.end.toLocaleDateString("en-US", endOpts);
+        viewItems = getWeekItems(items, range);
+
+        document.getElementById("calendarContainer").style.display = "";
+        document.getElementById("dayListContainer").style.display = "";
+        document.getElementById("monthContainer").style.display = "none";
+        document.getElementById("dayViewContainer").style.display = "none";
+
+        renderCalendar(viewItems, range);
+        renderDayList(viewItems, range);
+    } else if (currentView === 'month') {
+        range = getMonthRange(monthOffset);
+        document.getElementById("weekLabel").textContent =
+            range.start.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+        viewItems = getWeekItems(items, range);
+
+        document.getElementById("calendarContainer").style.display = "none";
+        document.getElementById("dayListContainer").style.display = "none";
+        document.getElementById("monthContainer").style.display = "";
+        document.getElementById("dayViewContainer").style.display = "none";
+
+        renderMonth(items, range);
+    } else if (currentView === 'day') {
+        range = getDayRange(dayOffset);
+        var dayLabel = range.start.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+        document.getElementById("weekLabel").textContent = dayLabel;
+        viewItems = getWeekItems(items, range);
+
+        document.getElementById("calendarContainer").style.display = "none";
+        document.getElementById("dayListContainer").style.display = "none";
+        document.getElementById("monthContainer").style.display = "none";
+        document.getElementById("dayViewContainer").style.display = "";
+
+        renderDayView(viewItems, range);
+    }
+
+    // Stats always reflect current view's range
     var nycCount = 0, dcCount = 0;
-    weekItems.forEach(function(item) {
+    (viewItems || []).forEach(function(item) {
         if (item.locKey === 'nyc') nycCount++; else if (item.locKey === 'dc') dcCount++;
     });
-
-    animateValue(document.getElementById("statTotal"), weekItems.length);
+    animateValue(document.getElementById("statTotal"), (viewItems || []).length);
     animateValue(document.getElementById("statNYC"), nycCount);
     animateValue(document.getElementById("statDC"), dcCount);
 
-    renderCalendar(weekItems, range);
-    renderDayList(weekItems, range);
+    document.getElementById("lastRefresh").textContent =
+        new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    document.getElementById("statSub").textContent =
+        currentView === 'day' ? 'Today' : currentView === 'month' ? 'This Month' : 'This Week';
+
     renderUpcoming(items);
     renderUpcomingCards(items);
-    renderRooms(weekItems);
+    renderRooms(viewItems || []);
 }
+
+// Keep renderWeek for backwards compat with init
+function renderWeek() { renderAll(); }
+function render() { renderAll(); }
 
 function buildTooltipHTML(item) {
     var ts = fmtTime(item.start);
@@ -1440,6 +1679,104 @@ function renderDayList(items, range) {
     document.getElementById("dayListContainer").innerHTML = parts.join('');
 }
 
+/* ── Month Grid ── */
+function renderMonth(allFilteredItems, range) {
+    var today = fmt(new Date());
+    var year = range.start.getFullYear();
+    var month = range.start.getMonth();
+    var firstDay = new Date(year, month, 1);
+    var lastDay = new Date(year, month + 1, 0);
+
+    // Start grid on Monday
+    var startDow = firstDay.getDay();
+    var gridStart = new Date(firstDay);
+    gridStart.setDate(firstDay.getDate() - (startDow === 0 ? 6 : startDow - 1));
+
+    // Group all filtered items by date
+    var grouped = {};
+    allFilteredItems.forEach(function(item) {
+        var key = item.start.slice(0, 10);
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(item);
+    });
+
+    var parts = ['<div class="month-grid">'];
+    var dayNames = ["MON","TUE","WED","THU","FRI","SAT","SUN"];
+    for (var h = 0; h < 7; h++) {
+        parts.push('<div class="mg-header">' + dayNames[h] + '</div>');
+    }
+
+    // Render 6 weeks of cells
+    var cellDate = new Date(gridStart);
+    for (var c = 0; c < 42; c++) {
+        var key = fmt(cellDate);
+        var isOutside = cellDate.getMonth() !== month;
+        var isToday = key === today;
+        var cls = 'mg-cell' + (isOutside ? ' outside' : '') + (isToday ? ' today-cell' : '');
+        var dayEvents = (grouped[key] || []).sort(function(a, b) { return a.start.localeCompare(b.start); });
+
+        parts.push('<div class="' + cls + '">');
+        parts.push('<div class="mg-date">' + cellDate.getDate() + '</div>');
+        if (dayEvents.length > 0) {
+            parts.push('<div class="mg-events">');
+            var show = Math.min(dayEvents.length, 3);
+            for (var j = 0; j < show; j++) {
+                var item = dayEvents[j];
+                var isDC = item.locKey === 'dc';
+                parts.push('<div class="mg-ev' + (isDC ? ' dc' : '') + '">' + esc(item.name) + '</div>');
+            }
+            if (dayEvents.length > 3) {
+                parts.push('<div style="font-size:8px;color:var(--text-tertiary);padding:1px 4px">+' + (dayEvents.length - 3) + ' more</div>');
+            }
+            parts.push('</div>');
+        }
+        parts.push('</div>');
+        cellDate.setDate(cellDate.getDate() + 1);
+    }
+    parts.push('</div>');
+    document.getElementById("monthContainer").innerHTML = parts.join('');
+}
+
+/* ── Day View ── */
+function renderDayView(items, range) {
+    var sorted = items.sort(function(a, b) { return a.start.localeCompare(b.start); });
+    var container = document.getElementById("dayViewContainer");
+
+    if (sorted.length === 0) {
+        container.innerHTML = '<div class="day-view"><div class="empty-week" style="border-radius:var(--radius-xl);border:1px solid var(--border-light)">' +
+            '<div class="empty-icon">\u2205</div>' +
+            '<div class="empty-text">No events this day</div>' +
+            '<div class="empty-sub">Try a different day or adjust your filters</div>' +
+            '</div></div>';
+        return;
+    }
+
+    var parts = ['<div class="day-view">'];
+    for (var i = 0; i < sorted.length; i++) {
+        var item = sorted[i];
+        var isDC = item.locKey === 'dc';
+        var sc = item.status.replace(/\s+/g, "-");
+        var ts = fmtTime(item.start);
+        var te = fmtTime(item.end);
+
+        parts.push(
+            '<div class="dv-event' + (isDC ? ' dc' : '') + '">',
+            '<div class="dv-time">' + (te ? ts + ' \u2013 ' + te : ts) + '</div>',
+            '<div class="dv-info">',
+            '<div class="dv-name">' + esc(item.name) + '</div>',
+            '<div class="dv-meta">'
+        );
+        if (item.room) parts.push('<span>\uD83D\uDCCD ' + esc(item.room) + '</span>');
+        if (item.status) parts.push('<span><span class="status-dot ' + sc + '"></span> ' + esc(item.status) + '</span>');
+        if (item.locKey) parts.push('<span class="tag ' + item.locKey + '">' + (item.locKey === 'dc' ? 'DC' : 'NYC') + '</span>');
+        if (item.contact) parts.push('<span>' + esc(item.contact) + '</span>');
+        if (item.guest_count) parts.push('<span>' + item.guest_count + ' guests</span>');
+        parts.push('</div></div></div>');
+    }
+    parts.push('</div>');
+    container.innerHTML = parts.join('');
+}
+
 /* ── Upcoming Table (desktop) ── */
 function renderUpcoming(items) {
     var now = new Date(); now.setHours(0, 0, 0, 0);
@@ -1522,8 +1859,7 @@ function renderRooms(items) {
 }
 
 function changeWeek(dir) {
-    if (dir === 0) weekOffset = 0; else weekOffset += dir;
-    renderWeek();
+    navigate(dir);
 }
 
 /* ── Filters ── */
@@ -1540,9 +1876,12 @@ document.getElementById("roomFilter").addEventListener("change", function() {
 /* ── Keyboard ── */
 document.addEventListener("keydown", function(e) {
     if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
-    if (e.key === "ArrowLeft") { changeWeek(-1); e.preventDefault(); }
-    else if (e.key === "ArrowRight") { changeWeek(1); e.preventDefault(); }
-    else if (e.key === "t" || e.key === "T") { changeWeek(0); }
+    if (e.key === "ArrowLeft") { navigate(-1); e.preventDefault(); }
+    else if (e.key === "ArrowRight") { navigate(1); e.preventDefault(); }
+    else if (e.key === "t" || e.key === "T") { navigate(0); }
+    else if (e.key === "1") { setView('day'); }
+    else if (e.key === "2") { setView('week'); }
+    else if (e.key === "3") { setView('month'); }
 });
 
 /* ── Touch swipe for mobile week nav ── */
@@ -1565,7 +1904,7 @@ document.addEventListener("keydown", function(e) {
         var dx = e.changedTouches[0].clientX - startX;
         var dy = e.changedTouches[0].clientY - startY;
         if (Math.abs(dx) > threshold && Math.abs(dx) > Math.abs(dy) * 1.5) {
-            changeWeek(dx > 0 ? -1 : 1);
+            navigate(dx > 0 ? -1 : 1);
         }
     }, { passive: true });
 })();
@@ -1596,11 +1935,13 @@ function animateValue(el, target) {
     setTimeout(tick, 100);
 }
 
-var _origChangeWeek = changeWeek;
-changeWeek = function(dir) {
-    if (prefersReducedMotion) { _origChangeWeek(dir); return; }
+var _origNavigate = navigate;
+navigate = function(dir) {
+    if (prefersReducedMotion) { _origNavigate(dir); return; }
 
     var cal = document.getElementById('calendarContainer');
+    var month = document.getElementById('monthContainer');
+    var dayV = document.getElementById('dayViewContainer');
     var label = document.getElementById('weekLabel');
 
     if (dir !== 0) {
@@ -1610,7 +1951,7 @@ changeWeek = function(dir) {
     cal.classList.add('transitioning');
 
     setTimeout(function() {
-        _origChangeWeek(dir);
+        _origNavigate(dir);
         label.classList.remove('slide-left', 'slide-right');
         requestAnimationFrame(function() {
             cal.classList.remove('transitioning');
