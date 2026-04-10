@@ -348,6 +348,10 @@ select.filter-btn {
     display: flex; flex-direction: column;
     overflow: hidden;
 }
+.month-grid .mg-cell:hover {
+    background: var(--surface-hover);
+    transition: background 0.15s;
+}
 .month-grid .mg-cell:nth-child(7n) { border-right: none; }
 .month-grid .mg-cell.outside {
     background: var(--bg);
@@ -631,7 +635,7 @@ select.filter-btn {
 .day-list {
     display: none;
     flex-direction: column;
-    gap: 2px;
+    gap: 12px;
     margin-bottom: 40px;
 }
 .day-list-item {
@@ -651,8 +655,8 @@ select.filter-btn {
 
 .day-list-head {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 16px;
-    min-height: 52px;
+    padding: 16px 20px;
+    min-height: 56px;
 }
 .today-item .day-list-head {
     background: var(--orange);
@@ -1099,9 +1103,9 @@ select.filter-btn {
 
     /* Month grid mobile */
     .month-grid { grid-template-columns: repeat(7, 1fr); }
-    .month-grid .mg-cell { min-height: 60px; padding: 4px; }
-    .mg-date { font-size: 10px; }
-    .mg-ev { font-size: 8px; padding: 1px 3px; }
+    .month-grid .mg-cell { min-height: 72px; padding: 6px; }
+    .mg-date { font-size: 12px; }
+    .mg-ev { font-size: 9px; padding: 2px 4px; }
 
     /* Day view mobile */
     .dv-event { flex-direction: column; gap: 6px; padding: 12px; }
@@ -1666,7 +1670,7 @@ function renderMonth(allFilteredItems, range) {
         var cls = 'mg-cell' + (isOutside ? ' outside' : '') + (isToday ? ' today-cell' : '');
         var dayEvents = (grouped[key] || []).sort(function(a, b) { return a.start.localeCompare(b.start); });
 
-        parts.push('<div class="' + cls + '">');
+        parts.push('<div class="' + cls + '" onclick="goToDate(\'' + key + '\')" style="cursor:pointer">');
         parts.push('<div class="mg-date">' + cellDate.getDate() + '</div>');
         if (dayEvents.length > 0) {
             parts.push('<div class="mg-events">');
@@ -1686,6 +1690,15 @@ function renderMonth(allFilteredItems, range) {
     }
     parts.push('</div>');
     document.getElementById("monthContainer").innerHTML = parts.join('');
+}
+
+function goToDate(dateStr) {
+    var target = new Date(dateStr + 'T12:00:00');
+    var now = new Date();
+    now.setHours(12, 0, 0, 0);
+    var diff = Math.round((target - now) / (1000 * 60 * 60 * 24));
+    dayOffset = diff;
+    setView('day');
 }
 
 /* ── Day View ── */
