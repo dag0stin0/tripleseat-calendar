@@ -132,7 +132,7 @@ body::after {
    FILTER PILLS — horizontal scroll on mobile
    ═══════════════════════════════════════════ */
 .filter-strip {
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: 8px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -176,7 +176,7 @@ select.filter-btn {
 
 .refresh-ts {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; color: var(--text-muted);
+    font-size: 10px; color: var(--text-muted);
     letter-spacing: 0.3px;
     margin-left: 6px;
 }
@@ -242,7 +242,7 @@ select.filter-btn {
    WEEK NAV
    ═══════════════════════════════════════════ */
 .week-bar {
-    display: flex; align-items: center; gap: 4px;
+    display: flex; align-items: center; gap: 8px;
     margin-bottom: 20px;
 }
 
@@ -281,6 +281,7 @@ select.filter-btn {
     padding: 8px 16px; cursor: pointer;
     letter-spacing: 0.5px; text-transform: uppercase;
     margin-left: 8px;
+    min-height: 44px;
     transition: all 0.15s var(--ease), box-shadow 0.2s;
 }
 .today-btn:hover {
@@ -309,7 +310,7 @@ select.filter-btn {
     border: none; background: transparent;
     color: var(--text-tertiary); cursor: pointer;
     transition: all 0.15s var(--ease);
-    min-height: 32px;
+    min-height: 44px;
 }
 .view-btn:hover { color: var(--text-secondary); }
 .view-btn.active {
@@ -331,7 +332,7 @@ select.filter-btn {
 }
 .month-grid .mg-header {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; font-weight: 500;
+    font-size: 11px; font-weight: 500;
     text-transform: uppercase; letter-spacing: 1px;
     color: var(--text-tertiary);
     text-align: center;
@@ -371,7 +372,7 @@ select.filter-btn {
 .mg-events { display: flex; flex-direction: column; gap: 2px; overflow-y: auto; flex: 1; }
 .mg-events::-webkit-scrollbar { width: 0; }
 .mg-ev {
-    font-size: 9px; font-weight: 500;
+    font-size: 11px; font-weight: 500;
     padding: 2px 5px;
     border-radius: 3px;
     border-left: 2px solid var(--blue);
@@ -556,7 +557,7 @@ select.filter-btn {
 }
 
 .ev-room {
-    font-size: 10px; color: var(--text-tertiary);
+    font-size: 11px; color: var(--text-tertiary);
     margin-top: 2px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -770,6 +771,7 @@ select.filter-btn {
 }
 .table-scroll {
     overflow-y: auto; flex: 1;
+    -webkit-overflow-scrolling: touch;
 }
 .table-scroll::-webkit-scrollbar { width: 4px; }
 .table-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -823,7 +825,7 @@ select.filter-btn {
 .table-wrap .name-cell { font-weight: 600; color: var(--text); }
 .table-wrap .time-cell {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; letter-spacing: 0.2px;
+    font-size: 11px; letter-spacing: 0.2px;
 }
 
 /* ═══════════════════════════════════════════
@@ -876,7 +878,7 @@ select.filter-btn {
 .tag {
     display: inline-flex; align-items: center;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 600;
+    font-size: 11px; font-weight: 600;
     text-transform: uppercase; letter-spacing: 0.4px;
     padding: 3px 8px; border-radius: 10px;
     line-height: 1;
@@ -1095,9 +1097,9 @@ select.filter-btn {
     .stats-divider { height: 18px; }
 
     .week-btn { width: 44px; height: 44px; font-size: 20px; border-radius: var(--radius); }
-    .today-btn { padding: 10px 18px; font-size: 11px; }
+    .today-btn { padding: 10px 18px; font-size: 11px; min-height: 44px; }
 
-    .view-btn { padding: 8px 12px; font-size: 9px; min-height: 36px; }
+    .view-btn { padding: 8px 12px; font-size: 9px; min-height: 44px; }
 
     /* Switch: hide grid, show day list (week view) */
     .calendar { display: none !important; }
@@ -1107,7 +1109,7 @@ select.filter-btn {
     .month-grid { grid-template-columns: repeat(7, 1fr); }
     .month-grid .mg-cell { min-height: 72px; padding: 6px; }
     .mg-date { font-size: 12px; }
-    .mg-ev { font-size: 9px; padding: 2px 4px; }
+    .mg-ev { font-size: 11px; padding: 2px 4px; }
 
     /* Day view mobile */
     .dv-event { flex-direction: column; gap: 6px; padding: 12px; }
@@ -1126,7 +1128,7 @@ select.filter-btn {
 @media (max-width: 480px) {
     .stats-bar { gap: 16px; }
     .stat-value { font-size: 24px; letter-spacing: -1.5px; }
-    .stat-label { font-size: 9px; }
+    .stat-label { font-size: 11px; }
     .stats-divider { display: none; }
 
     .rooms-row { flex-direction: column; }
