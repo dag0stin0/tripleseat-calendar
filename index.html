@@ -438,10 +438,12 @@ select.filter-btn {
     display: grid; grid-template-columns: repeat(7, 1fr);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-xl);
-    overflow: hidden;
     margin-bottom: 48px;
     animation: scaleIn 0.35s var(--ease-out-quint) both;
+    position: relative;
 }
+.calendar .day-col:first-child{border-radius:var(--radius-xl) 0 0 var(--radius-xl)}
+.calendar .day-col:last-child{border-radius:0 var(--radius-xl) var(--radius-xl) 0}
 
 .day-col {
     min-height: 220px;
@@ -497,7 +499,7 @@ select.filter-btn {
 .day-body {
     padding: 6px; flex: 1;
     display: flex; flex-direction: column;
-    gap: 4px; overflow-y: auto;
+    gap: 4px; overflow: visible;
 }
 .day-body::-webkit-scrollbar { width: 0; }
 
