@@ -1236,11 +1236,11 @@ select.filter-btn {
     <!-- Day view -->
     <div id="dayViewContainer" style="display:none"></div>
 
-    <!-- Rooms -->
-    <div class="section-row">
-        <span class="section-label">Rooms This Week</span>
+    <!-- Rooms (week view only) -->
+    <div class="section-row" id="roomsSection" style="display:none">
+        <span class="section-label" id="roomsLabel">Rooms This Week</span>
     </div>
-    <div class="rooms-row" id="roomsGrid"></div>
+    <div class="rooms-row" id="roomsGrid" style="display:none"></div>
 </main>
 
 <div class="kb-hint" aria-hidden="true">
@@ -1388,6 +1388,10 @@ function setView(view) {
     document.querySelectorAll('.view-btn').forEach(function(btn) {
         btn.classList.toggle('active', btn.getAttribute('data-view') === view);
     });
+    // Show rooms only in week view
+    var showRooms = view === 'week' ? '' : 'none';
+    document.getElementById('roomsSection').style.display = showRooms;
+    document.getElementById('roomsGrid').style.display = showRooms;
     renderAll();
 }
 
