@@ -6,24 +6,24 @@
 <title>PubKey — Events</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <style>
 
 /* ═══════════════════════════════════════════
    TOKENS
    ═══════════════════════════════════════════ */
 :root {
-    --bg: #080808;
-    --surface: #0f0f11;
-    --surface-raised: #17171a;
-    --surface-hover: #1e1e22;
+    --bg: #050505;
+    --surface: #0a0a0a;
+    --surface-raised: #111;
+    --surface-hover: #1a1a1a;
     --surface-card: #131316;
-    --text: #ececf0;
-    --text-secondary: #a1a1aa;
-    --text-tertiary: #63636e;
-    --text-muted: #4a4a55;
-    --border: #27272a;
-    --border-light: #1c1c1f;
+    --text: #f0f0f0;
+    --text-secondary: #aaa;
+    --text-tertiary: #8a8a8a;
+    --text-muted: #6b6b6b;
+    --border: rgba(255,255,255,.08);
+    --border-light: rgba(255,255,255,.06);
     --border-subtle: #151518;
 
     --blue: #3b82f6;
@@ -36,7 +36,7 @@
     --red-dim: rgba(239, 68, 68, 0.08);
     --red-glow: rgba(239, 68, 68, 0.15);
 
-    --accent: #E85D26;
+    --accent: #ff3d00;
     --accent-soft: #f59e0b;
     --accent-dim: rgba(232, 93, 38, 0.08);
     --accent-glow: rgba(232, 93, 38, 0.15);
@@ -67,8 +67,8 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Space Grotesk', -apple-system, system-ui, sans-serif;
-    font-size: 15px;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 16px;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -89,7 +89,13 @@ body::after {
     background-size: 200px 200px;
 }
 
-::selection { background: rgba(232, 93, 38, 0.3); }
+::selection { background: rgba(255,61,0,.25); color: var(--text); }
+:focus-visible { outline: 2px solid rgba(255,61,0,.5); outline-offset: 2px; border-radius: 4px; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.18); }
 
 .sr-only {
     position: absolute; width: 1px; height: 1px;
@@ -110,7 +116,7 @@ body::after {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(8, 8, 8, 0.95);
+    background: rgba(5,5,5,.95);
 }
 
 .topbar-left {
@@ -155,7 +161,7 @@ body::after {
 }
 select.filter-btn {
     padding-right: 26px;
-    background-image: url("data:image/svg+xml,%3Csvg width='8' height='5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%2363636e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='8' height='5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%238a8a8a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
 }
@@ -205,7 +211,7 @@ select.filter-btn {
     position: relative;
 }
 .stat-value {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 36px; font-weight: 700;
     letter-spacing: -2px; line-height: 1;
     color: var(--text);
@@ -391,7 +397,7 @@ select.filter-btn {
     margin-bottom: 48px;
 }
 .dv-header {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
     font-size: 20px; font-weight: 600;
     color: var(--text);
     margin-bottom: 16px;
@@ -450,7 +456,7 @@ select.filter-btn {
     min-height: 220px;
     display: flex; flex-direction: column;
     border-right: 1px solid var(--border-light);
-    background: var(--surface);
+    background: linear-gradient(135deg,rgba(255,255,255,.02),rgba(255,255,255,.005));
     min-width: 0;
     overflow: visible;
 }
@@ -516,9 +522,10 @@ select.filter-btn {
    ═══════════════════════════════════════════ */
 .ev {
     padding: 8px 10px;
-    border-radius: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.06);
     border-left: 3px solid var(--blue);
-    background: var(--blue-dim);
+    background: rgba(61,139,253,.06);
     cursor: default;
     position: relative;
     transition: transform 0.15s var(--ease-out-quint), background 0.15s, box-shadow 0.2s;
@@ -748,12 +755,14 @@ select.filter-btn {
 .section-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 2px;
+    text-transform: uppercase; letter-spacing: 0.12em;
     color: var(--text-secondary);
 }
 .section-count {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: var(--text-muted);
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-muted);
 }
 
 /* ═══════════════════════════════════════════
@@ -794,8 +803,8 @@ select.filter-btn {
     text-align: left; padding: 10px 14px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1.2px;
-    color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-secondary);
     background: var(--surface-raised);
     border-bottom: 2px solid var(--border);
     position: sticky; top: 0; z-index: 2;
@@ -879,7 +888,7 @@ select.filter-btn {
     display: inline-flex; align-items: center;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.4px;
+    text-transform: uppercase; letter-spacing: 0.04em;
     padding: 3px 8px; border-radius: 10px;
     line-height: 1;
 }
