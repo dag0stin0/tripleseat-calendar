@@ -118,24 +118,12 @@ body::after {
 .topbar-left {
     display: flex; align-items: center; gap: 14px;
 }
-.logo-link {
-    display: flex; align-items: center; gap: 10px;
-    text-decoration: none; color: var(--text);
+.topbar-title {
+    font-size: 1.4rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1;
+    color: var(--text); margin: 0;
 }
-.logo-img {
-    height: 24px; width: auto;
-    opacity: 0.85; transition: opacity 0.2s;
-}
-.logo-link:hover .logo-img { opacity: 1; }
-.logo-divider {
-    width: 1px; height: 20px;
-    background: var(--border);
-}
-.logo-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--text-tertiary);
+.topbar-title span {
+    color: var(--accent);
 }
 
 .topbar-right {
@@ -458,8 +446,8 @@ select.filter-btn {
     display: flex; flex-direction: column;
     border-right: 1px solid var(--border-light);
     background: var(--surface);
-    contain: content;
     min-width: 0;
+    overflow: visible;
 }
 .day-col:last-child { border-right: none; }
 
@@ -537,6 +525,7 @@ select.filter-btn {
     transform: translateY(-2px);
     background: var(--blue-glow);
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.08);
+    z-index: 100;
 }
 .ev.dc:hover {
     background: var(--red-glow);
@@ -579,7 +568,7 @@ select.filter-btn {
     border-radius: var(--radius);
     padding: 12px 14px;
     min-width: 220px; max-width: 280px;
-    z-index: 50;
+    z-index: 200;
     box-shadow: 0 12px 40px rgba(0,0,0,0.5);
     pointer-events: none;
 }
@@ -1169,11 +1158,7 @@ select.filter-btn {
 <!-- ════════ NAV ════════ -->
 <nav class="topbar" aria-label="Event filters">
     <div class="topbar-left">
-        <a href="https://pubkey.bar" class="logo-link" target="_blank" rel="noopener">
-            <img src="pubkey-logo.svg" alt="PubKey" class="logo-img">
-        </a>
-        <div class="logo-divider"></div>
-        <span class="logo-title">Events</span>
+        <h1 class="topbar-title">PUBKEY <span>EVENTS</span></h1>
     </div>
     <div class="topbar-right">
         <div class="filter-strip">
@@ -1198,8 +1183,6 @@ select.filter-btn {
 
 <!-- ════════ PAGE ════════ -->
 <main class="page">
-    <h1 class="sr-only">PubKey Events Calendar</h1>
-
     <div class="error-banner" id="errorBanner"></div>
 
     <!-- Stats -->
