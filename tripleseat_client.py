@@ -130,11 +130,8 @@ class TripleseatClient:
     # ── Events ──────────────────────────────────────────────
 
     def get_events(self, **kwargs) -> list:
-        """Get all events (paginated).
-
-        `max_pages` is extracted here so it isn't forwarded to Tripleseat."""
-        max_pages = kwargs.pop("max_pages", 50)
-        return self._fetch_all_pages("/events", kwargs, max_pages=max_pages)
+        """Get all events (paginated)."""
+        return self._fetch_all_pages("/events", kwargs)
 
     def get_event(self, event_id: int) -> dict:
         """Get a single event by ID."""
@@ -150,11 +147,8 @@ class TripleseatClient:
             end_date: Filter by end date (YYYY-MM-DD)
             order: Field to order by (e.g. 'event_start')
             sort_direction: 'asc' or 'desc'
-            max_pages: Cap the paginator (default 50); extracted here so
-                       it isn't forwarded to Tripleseat as a query param.
         """
-        max_pages = kwargs.pop("max_pages", 50)
-        return self._fetch_all_pages("/events/search", kwargs, max_pages=max_pages)
+        return self._fetch_all_pages("/events/search", kwargs)
 
     # ── Bookings ────────────────────────────────────────────
 
