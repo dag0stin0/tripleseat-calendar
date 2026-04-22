@@ -124,22 +124,53 @@ def _as_str(v):
     return str(v)
 
 
-def _ts_iso(v):
-    """Normalize Tripleseat date/time payloads to 'YYYY-MM-DDTHH:MM:SS'."""
+_TS_DATE_FORMATS = (
+    "%Y-%m-%dT%H:%M:%S.%fZ",
+    "%Y-%m-%dT%H:%M:%S%z",
+    "%Y-%m-%dT%H:%M:%SZ",
+    "%Y-%m-%dT%H:%M:%S",
+    "%Y-%m-%d %H:%M:%S",
+    "%Y-%m-%d %I:%M %p",
+    "%Y-%m-%d %I:%M%p",
+    "%Y-%m-%d %H:%M",
+    "%Y-%m-%d",
+    # Tripleseat commonly returns US-style dates
+    "%m/%d/%Y %I:%M %p",
+    "%m/%d/%Y %I:%M%p",
+    "%m/%d/%Y %H:%M:%S",
+    "%m/%d/%Y %H:%M",
+    "%m/%d/%Y",
+    "%m-%d-%Y %I:%M %p",
+    "%m-%d-%Y",
+)
+
+
+def _ts_iso(v, time_hint=None):
+    """Normalize Tripleseat date/time payloads to 'YYYY-MM-DDTHH:MM:SS'.
+
+    time_hint may be a separate time string (Tripleseat sometimes splits
+    date and time across two fields, e.g. 'event_date' + 'start_time_only')."""
     if not v:
         return ""
     s = str(v).strip()
     if not s:
         return ""
-    # Tripleseat returns ISO 8601 with tz; we want a local-naive ISO string
-    for fmt in ("%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%S%z",
-                "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S",
-                "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+
+    # If we have a date and a separate time component, try them together first
+    if time_hint:
+        combo = f"{s} {str(time_hint).strip()}"
+        for fmt in _TS_DATE_FORMATS:
+            try:
+                return datetime.strptime(combo, fmt).strftime("%Y-%m-%dT%H:%M:%S")
+            except ValueError:
+                continue
+
+    for fmt in _TS_DATE_FORMATS:
         try:
             return datetime.strptime(s, fmt).strftime("%Y-%m-%dT%H:%M:%S")
         except ValueError:
             continue
-    return s  # last resort — pass through
+    return ""  # unparseable — drop rather than ship a bad string
 
 
 def _ts_contact(raw):
@@ -182,8 +213,16 @@ def _ts_map_event(raw, eid):
         "type": event_type,
         "name": name,
         "status": status,
-        "start": _ts_iso(raw.get("event_start") or raw.get("start_time") or raw.get("start_date")),
-        "end":   _ts_iso(raw.get("event_end")   or raw.get("end_time")   or raw.get("end_date")),
+        "start": _ts_iso(
+            raw.get("event_start") or raw.get("start_time") or
+            raw.get("start_date") or raw.get("event_date") or raw.get("date"),
+            time_hint=raw.get("start_time_only") or raw.get("event_start_time")
+        ),
+        "end": _ts_iso(
+            raw.get("event_end") or raw.get("end_time") or
+            raw.get("end_date") or raw.get("event_date") or raw.get("date"),
+            time_hint=raw.get("end_time_only") or raw.get("event_end_time")
+        ),
         "location": location,
         "locKey": _loc_key(location),
         "room": rooms,
@@ -279,11 +318,15 @@ class handler(BaseHTTPRequestHandler):
         if not items:
             try:
                 items = load_csv_events()
-                if start_str and end_str:
-                    items = [i for i in items if start_str <= i["start"][:10] <= end_str]
             except Exception as e:
                 logger.exception("CSV load failed")
                 return self._send_json(500, {"error": str(e)})
+
+        # 3. Date filter (applies to both Tripleseat and CSV; Tripleseat's
+        #    search_events params are unreliable, so filter here too)
+        if start_str and end_str:
+            items = [i for i in items
+                     if i.get("start") and start_str <= i["start"][:10] <= end_str]
 
         items.sort(key=lambda x: x.get("start", ""))
 
