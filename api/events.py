@@ -253,14 +253,11 @@ def load_tripleseat_events(start: str, end: str):
 
     try:
         client = TripleseatClient(consumer_key=ck, consumer_secret=cs, api_key=api)
-        params = {"max_pages": 20}  # ~500 events max — comfortable under 30s lambda budget
-        if start:
-            params["start_date"] = start
-        if end:
-            params["end_date"] = end
-        params["order"] = "event_start"
-        params["sort_direction"] = "asc"
-        raw_events = client.search_events(**params)
+        # Tripleseat's search_events date params were returning 0 results
+        # in practice, so pull a capped page-count of recent events and
+        # filter by date on our side. ~750 events is plenty for a rolling
+        # year and finishes well inside the lambda budget.
+        raw_events = client.get_events(max_pages=30)
 
         items = []
         skipped = 0

@@ -130,8 +130,11 @@ class TripleseatClient:
     # ── Events ──────────────────────────────────────────────
 
     def get_events(self, **kwargs) -> list:
-        """Get all events (paginated)."""
-        return self._fetch_all_pages("/events", kwargs)
+        """Get all events (paginated).
+
+        `max_pages` is extracted here so it isn't forwarded to Tripleseat."""
+        max_pages = kwargs.pop("max_pages", 50)
+        return self._fetch_all_pages("/events", kwargs, max_pages=max_pages)
 
     def get_event(self, event_id: int) -> dict:
         """Get a single event by ID."""
