@@ -147,8 +147,11 @@ class TripleseatClient:
             end_date: Filter by end date (YYYY-MM-DD)
             order: Field to order by (e.g. 'event_start')
             sort_direction: 'asc' or 'desc'
+            max_pages: Cap the paginator (default 50); extracted here so
+                       it isn't forwarded to Tripleseat as a query param.
         """
-        return self._fetch_all_pages("/events/search", kwargs)
+        max_pages = kwargs.pop("max_pages", 50)
+        return self._fetch_all_pages("/events/search", kwargs, max_pages=max_pages)
 
     # ── Bookings ────────────────────────────────────────────
 

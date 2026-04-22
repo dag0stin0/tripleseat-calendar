@@ -14,7 +14,7 @@ import csv
 import json
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 
@@ -253,12 +253,14 @@ def load_tripleseat_events(start: str, end: str):
 
     try:
         client = TripleseatClient(consumer_key=ck, consumer_secret=cs, api_key=api)
-        params = {}
+        params = {"max_pages": 20}  # ~500 events max — comfortable under 30s lambda budget
         if start:
             params["start_date"] = start
         if end:
             params["end_date"] = end
-        raw_events = client.search_events(**params) if params else client.get_events()
+        params["order"] = "event_start"
+        params["sort_direction"] = "asc"
+        raw_events = client.search_events(**params)
 
         items = []
         skipped = 0
@@ -296,6 +298,14 @@ class handler(BaseHTTPRequestHandler):
         for label, val in (("start", start_str), ("end", end_str)):
             if val and not self._valid_date(val):
                 return self._send_json(400, {"error": f"Invalid {label} date. Use YYYY-MM-DD."})
+
+        # Default window if caller omits: past 60 days → next 365 days.
+        # Without this the Tripleseat path would fetch every event ever,
+        # which blows past the lambda's execution budget.
+        if not start_str:
+            start_str = (datetime.utcnow() - timedelta(days=60)).strftime("%Y-%m-%d")
+        if not end_str:
+            end_str = (datetime.utcnow() + timedelta(days=365)).strftime("%Y-%m-%d")
 
         items = []
         source = "csv"
