@@ -963,6 +963,311 @@ select.filter-btn {
 }
 
 /* ═══════════════════════════════════════════
+   SEARCH
+   ═══════════════════════════════════════════ */
+.search-wrap {
+    position: relative;
+    display: flex; align-items: center;
+    min-width: 0;
+}
+.search-input {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 12px;
+    padding: 8px 14px 8px 32px;
+    border-radius: 20px;
+    border: 1px solid var(--border-light);
+    background: var(--surface);
+    color: var(--text);
+    width: 180px;
+    min-height: 36px;
+    transition: all 0.15s var(--ease);
+    -webkit-appearance: none; appearance: none;
+}
+.search-input::placeholder { color: var(--text-muted); }
+.search-input:focus {
+    outline: none;
+    width: 260px;
+    border-color: var(--orange);
+    background: var(--surface-raised);
+    box-shadow: 0 0 0 2px var(--orange-glow);
+}
+.search-icon {
+    position: absolute; left: 11px; top: 50%;
+    transform: translateY(-50%);
+    width: 13px; height: 13px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+.search-clear {
+    position: absolute; right: 8px; top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    border: none; background: transparent;
+    color: var(--text-muted);
+    cursor: pointer; font-size: 14px;
+    display: none; align-items: center; justify-content: center;
+    border-radius: 50%;
+}
+.search-clear:hover { background: var(--surface-raised); color: var(--text-secondary); }
+.search-wrap.has-value .search-clear { display: flex; }
+
+@media (max-width: 768px) {
+    .search-wrap { width: 100%; }
+    .search-input { width: 100%; font-size: 13px; min-height: 40px; }
+    .search-input:focus { width: 100%; }
+}
+
+/* ═══════════════════════════════════════════
+   AT-A-GLANCE HERO
+   ═══════════════════════════════════════════ */
+.glance-card {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-light);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: 0 0 24px;
+    animation: enterUp 0.5s var(--ease-out-quint) both;
+    animation-delay: 0.08s;
+}
+.glance-cell {
+    background: var(--surface);
+    padding: 16px 18px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 92px;
+    position: relative;
+    overflow: hidden;
+}
+.glance-cell::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    opacity: 0; transition: opacity 0.3s;
+}
+.glance-cell:hover::before { opacity: 0.3; }
+
+.glance-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--text-tertiary);
+}
+.glance-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px; font-weight: 700;
+    color: var(--text);
+    letter-spacing: -1.5px; line-height: 1;
+    transition: opacity 0.2s;
+}
+.glance-value.money { color: var(--orange); }
+.glance-value.small { font-size: 18px; letter-spacing: -0.5px; }
+.glance-sub {
+    font-size: 11px; color: var(--text-tertiary);
+    margin-top: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+@media (max-width: 960px) {
+    .glance-card { grid-template-columns: repeat(2, 1fr); }
+    .glance-cell { min-height: 78px; padding: 14px 16px; }
+    .glance-value { font-size: 24px; }
+    .glance-value.small { font-size: 16px; }
+}
+@media (max-width: 480px) {
+    .glance-value { font-size: 22px; }
+    .glance-label { font-size: 9.5px; letter-spacing: 1px; }
+}
+
+/* ═══════════════════════════════════════════
+   EVENT CLICKABILITY + TODAY PULSE
+   ═══════════════════════════════════════════ */
+.ev, .m-ev, .dv-event, .mg-ev, .uc-card {
+    cursor: pointer;
+}
+.ev:focus-visible, .m-ev:focus-visible, .dv-event:focus-visible,
+.mg-ev:focus-visible, .uc-card:focus-visible {
+    outline: 2px solid var(--orange);
+    outline-offset: 2px;
+}
+.m-ev { transition: background 0.12s, transform 0.1s var(--ease); }
+.m-ev:hover { background: var(--blue-glow); transform: translateY(-1px); }
+.m-ev.dc:hover { background: var(--red-glow); }
+.uc-card { transition: background 0.12s, transform 0.1s var(--ease); }
+.uc-card:hover { background: var(--surface-raised); transform: translateY(-1px); }
+.mg-ev:hover { filter: brightness(1.4); }
+
+/* Strong today indicator on month grid */
+.mg-cell.today-cell {
+    background: linear-gradient(180deg, rgba(232, 93, 38, 0.10) 0%, var(--surface) 90px);
+    box-shadow: inset 0 0 0 1px rgba(232, 93, 38, 0.35);
+}
+.mg-cell.today-cell .mg-date {
+    color: #fff;
+    background: var(--orange);
+    width: 20px; height: 20px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════
+   EVENT DETAIL DRAWER
+   ═══════════════════════════════════════════ */
+.drawer-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none;
+    z-index: 500;
+    transition: opacity 0.25s var(--ease);
+}
+.drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.drawer {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(460px, 92vw);
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 501;
+    transform: translateX(100%);
+    transition: transform 0.3s var(--ease-out-quint);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    box-shadow: -12px 0 48px rgba(0,0,0,0.5);
+}
+.drawer.open { transform: translateX(0); }
+.drawer-head {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.drawer-title {
+    font-size: 18px; font-weight: 600;
+    color: var(--text); line-height: 1.25;
+    letter-spacing: -0.3px;
+    margin: 0;
+}
+.drawer-close {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border-light);
+    background: var(--surface-raised);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: all 0.15s var(--ease);
+}
+.drawer-close:hover {
+    color: var(--text);
+    border-color: var(--border);
+    transform: rotate(90deg);
+}
+.drawer-close:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.drawer-body {
+    padding: 18px 22px 28px;
+    overflow-y: auto; flex: 1;
+    scrollbar-width: thin;
+}
+.drawer-body::-webkit-scrollbar { width: 4px; }
+.drawer-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.dr-tags {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin: 6px 0 18px;
+}
+.dr-section {
+    padding: 14px 0;
+    border-top: 1px solid var(--border-light);
+}
+.dr-section:first-of-type { border-top: none; padding-top: 4px; }
+.dr-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.dr-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 16px;
+    padding: 6px 0;
+    font-size: 13px;
+}
+.dr-label {
+    color: var(--text-tertiary);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+.dr-val {
+    color: var(--text);
+    text-align: right;
+    font-weight: 500;
+    word-break: break-word;
+    min-width: 0;
+}
+.dr-val.mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+}
+.dr-val.money { color: var(--orange); font-weight: 600; }
+.dr-val.money-dim { color: var(--text-secondary); }
+.dr-empty {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-style: italic;
+    text-align: center;
+    padding: 16px 0;
+}
+.dr-actions {
+    display: flex; gap: 8px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border-light);
+    background: var(--surface-raised);
+    flex-shrink: 0;
+}
+.dr-btn {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-light);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    min-height: 40px;
+    transition: all 0.15s var(--ease);
+}
+.dr-btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--border);
+    color: var(--text);
+}
+.dr-btn.primary {
+    background: var(--orange-dim);
+    color: var(--orange);
+    border-color: rgba(232, 93, 38, 0.25);
+}
+.dr-btn.primary:hover {
+    background: rgba(232, 93, 38, 0.15);
+    box-shadow: 0 0 14px var(--orange-glow);
+}
+.dr-btn:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+
+@media (max-width: 600px) {
+    .drawer { width: 100vw; }
+}
+
+/* ═══════════════════════════════════════════
    KEYBOARD HINT
    ═══════════════════════════════════════════ */
 .kb-hint {
@@ -1152,19 +1457,43 @@ select.filter-btn {
 @media print {
     :root {
         --bg: #fff; --surface: #fff; --surface-raised: #f5f5f5;
-        --text: #111; --text-secondary: #555; --text-tertiary: #888;
-        --border: #ccc; --border-light: #ddd;
+        --text: #111; --text-secondary: #333; --text-tertiary: #666;
+        --border: #bbb; --border-light: #ddd;
+        --orange: #c44310;
     }
-    body { background: #fff; color: #111; }
+    @page { size: landscape; margin: 0.5in; }
+    body { background: #fff; color: #111; font-size: 11px; }
     body::after { display: none; }
-    .topbar { position: relative; background: #fff; backdrop-filter: none; }
+    .topbar {
+        position: relative; background: #fff; backdrop-filter: none;
+        border-bottom: 2px solid #111;
+        padding: 0 0 10px; margin-bottom: 16px; height: auto;
+    }
+    .topbar-title { font-size: 20px; }
+    .topbar-right, .view-toggle, .refresh-ts, .search-wrap { display: none !important; }
+    .page { padding: 0; max-width: none; }
+    .stats-bar { padding: 8px 0; margin-bottom: 12px; gap: 24px; border-bottom: 1px solid #999; }
+    .stat-value { font-size: 22px; text-shadow: none !important; color: #111 !important; }
+    .glance-card {
+        grid-template-columns: repeat(4, 1fr);
+        border-color: #999; background: #999; margin-bottom: 16px;
+    }
+    .glance-cell { padding: 8px 10px; min-height: 0; }
+    .glance-value { font-size: 18px; color: #111 !important; }
+    .glance-value.money { color: #c44310 !important; }
+    .week-bar { margin-bottom: 10px; }
+    .week-btn, .today-btn { display: none; }
+    .week-label { font-size: 14px; font-weight: 700; color: #111; padding: 0; }
 
-    .day-col { min-height: auto; }
-    .day-col.today { background: #fffbeb; }
-    .day-col.today .day-head { background: #E85D26; }
-    .ev { break-inside: avoid; }
-    .kb-hint { display: none; }
-    .ev-tooltip { display: none !important; }
+    .day-col { min-height: auto; background: #fff !important; }
+    .day-col.today { background: #fff3ea !important; animation: none; }
+    .day-col.today .day-head { background: #c44310; }
+    .ev, .m-ev, .dv-event, .uc-card, .day-list-item, .mg-cell { break-inside: avoid; }
+    .ev { background: #f7f7f7 !important; border: 1px solid #ccc; border-left-width: 3px; }
+    .ev.dc { background: #fff0f0 !important; }
+    .ev-tooltip, .kb-hint, .drawer, .drawer-backdrop { display: none !important; }
+    .rooms-row { margin-bottom: 12px; }
+    a[href]::after { content: ""; }
 }
 </style>
 </head>
@@ -1176,6 +1505,11 @@ select.filter-btn {
         <h1 class="topbar-title">PUBKEY <span>EVENTS</span></h1>
     </div>
     <div class="topbar-right">
+        <div class="search-wrap" id="searchWrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="search" id="searchInput" class="search-input" placeholder="Search events, contacts, rooms…" aria-label="Search events" autocomplete="off" spellcheck="false">
+            <button type="button" class="search-clear" id="searchClear" aria-label="Clear search">&times;</button>
+        </div>
         <div class="filter-strip">
             <select class="filter-btn" id="statusFilter" aria-label="Filter by status">
                 <option value="all">All Status</option>
@@ -1218,6 +1552,38 @@ select.filter-btn {
         </div>
     </div>
 
+    <!-- At a glance -->
+    <section class="glance-card" id="glanceCard" aria-label="At a glance summary">
+        <div class="glance-cell">
+            <div class="glance-label" id="glanceLabelEvents">Events</div>
+            <div>
+                <div class="glance-value" id="glanceEvents">&mdash;</div>
+                <div class="glance-sub" id="glanceEventsSub">&nbsp;</div>
+            </div>
+        </div>
+        <div class="glance-cell">
+            <div class="glance-label">Guests</div>
+            <div>
+                <div class="glance-value" id="glanceGuests">&mdash;</div>
+                <div class="glance-sub" id="glanceGuestsSub">&nbsp;</div>
+            </div>
+        </div>
+        <div class="glance-cell">
+            <div class="glance-label">Booked Revenue</div>
+            <div>
+                <div class="glance-value money" id="glanceRevenue">&mdash;</div>
+                <div class="glance-sub" id="glanceRevenueSub">&nbsp;</div>
+            </div>
+        </div>
+        <div class="glance-cell">
+            <div class="glance-label">Top Room</div>
+            <div>
+                <div class="glance-value small" id="glanceTopRoom">&mdash;</div>
+                <div class="glance-sub" id="glanceTopRoomSub">&nbsp;</div>
+            </div>
+        </div>
+    </section>
+
     <!-- Nav bar -->
     <div class="week-bar">
         <button class="week-btn" onclick="navigate(-1)" aria-label="Previous">&#8249;</button>
@@ -1252,13 +1618,28 @@ select.filter-btn {
     <div class="rooms-row" id="roomsGrid" style="display:none"></div>
 </main>
 
+<!-- ════════ DRAWER ════════ -->
+<div class="drawer-backdrop" id="drawerBackdrop" tabindex="-1"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+    <div class="drawer-head">
+        <h2 class="drawer-title" id="drawerTitle">Event</h2>
+        <button class="drawer-close" id="drawerClose" aria-label="Close event details">&times;</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="dr-actions">
+        <button class="dr-btn" id="drawerIcs" type="button">Add to Calendar</button>
+        <button class="dr-btn primary" id="drawerShare" type="button">Copy Link</button>
+    </div>
+</aside>
+
 <div class="kb-hint" aria-hidden="true">
-    <kbd>&larr;</kbd><kbd>&rarr;</kbd> navigate &nbsp; <kbd>T</kbd> today &nbsp; <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> views
+    <kbd>&larr;</kbd><kbd>&rarr;</kbd> navigate &nbsp; <kbd>T</kbd> today &nbsp; <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> views &nbsp; <kbd>/</kbd> search &nbsp; <kbd>Esc</kbd> close
 </div>
 
 <!-- ════════ SCRIPT ════════ -->
 <script>
 var allItems = [];
+var itemsById = {};
 var weekOffset = 0;
 var monthOffset = 0;
 var dayOffset = 0;
@@ -1266,12 +1647,15 @@ var currentView = "day";
 var activeStatusFilter = "all";
 var activeLocationFilter = "all";
 var activeRoomFilter = "all";
+var searchQuery = "";
+var dataSource = "csv";
 
 /* ── API ── */
-function apiItemToLocal(item) {
+function apiItemToLocal(item, idx) {
     var loc = item.location || '';
     var locKey = item.locKey || (loc.toLowerCase().indexOf('dc') !== -1 ? 'dc' : 'nyc');
     return {
+        id: item.id != null ? String(item.id) : ('e' + idx),
         name: item.name || '',
         status: (item.status || '').toLowerCase(),
         start: item.start || '',
@@ -1282,8 +1666,30 @@ function apiItemToLocal(item) {
         guest_count: item.guest_count || 0,
         contact: item.contact || '',
         eventStyle: item.event_style || '',
-        type: item.type || ''
+        type: item.type || '',
+        fb_min: item.fb_min != null ? Number(item.fb_min) : null,
+        grand_total: item.grand_total != null ? Number(item.grand_total) : null,
+        deposit: item.deposit != null ? Number(item.deposit) : null,
+        amount_due: item.amount_due != null ? Number(item.amount_due) : null,
+        actual: item.actual != null ? Number(item.actual) : null
     };
+}
+
+function fmtMoney(n) {
+    if (n == null || isNaN(n)) return null;
+    if (n === 0) return '$0';
+    return '$' + Math.round(n).toLocaleString('en-US');
+}
+function fmtMoneyCompact(n) {
+    if (n == null || isNaN(n)) return '—';
+    if (n >= 1000) return '$' + (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k';
+    return '$' + Math.round(n);
+}
+function matchesSearch(item, q) {
+    if (!q) return true;
+    var hay = (item.name + '|' + item.contact + '|' + item.room + '|' +
+               item.location + '|' + item.eventStyle + '|' + item.status).toLowerCase();
+    return hay.indexOf(q) !== -1;
 }
 
 function loadEvents() {
@@ -1293,11 +1699,15 @@ function loadEvents() {
             return res.json();
         })
         .then(function(data) {
-            allItems = (data.items || []).map(apiItemToLocal);
+            allItems = (data.items || []).map(function(it, i) { return apiItemToLocal(it, i); });
             allItems.sort(function(a, b) { return a.start.localeCompare(b.start); });
-            document.getElementById("statSub").textContent = data.source === "tripleseat" ? "Live" : "This Week";
+            itemsById = {};
+            allItems.forEach(function(i) { itemsById[i.id] = i; });
+            dataSource = data.source || "csv";
             populateRoomFilter();
+            applyUrlState();
             renderWeek();
+            openDrawerFromUrl();
         })
         .catch(function(err) {
             document.getElementById("errorBanner").textContent = "Failed to load events: " + err.message;
@@ -1340,10 +1750,12 @@ var _escEl = document.createElement("div");
 function esc(s) { _escEl.textContent = s; return _escEl.innerHTML; }
 
 function getFiltered() {
+    var q = searchQuery.trim().toLowerCase();
     return allItems.filter(function(item) {
         if (activeStatusFilter !== "all" && item.status !== activeStatusFilter) return false;
         if (activeLocationFilter !== "all" && item.locKey !== activeLocationFilter) return false;
         if (activeRoomFilter !== "all" && item.room !== activeRoomFilter) return false;
+        if (q && !matchesSearch(item, q)) return false;
         return true;
     });
 }
@@ -1473,11 +1885,58 @@ function renderAll() {
     animateValue(document.getElementById("statDC"), dcCount);
 
     document.getElementById("lastRefresh").textContent =
+        (dataSource === 'tripleseat' ? 'Live · ' : '') +
         new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
     document.getElementById("statSub").textContent =
         currentView === 'day' ? 'Today' : currentView === 'month' ? 'This Month' : 'This Week';
 
+    renderGlance(viewItems || []);
     renderRooms(viewItems || []);
+    persistUrlState();
+}
+
+/* ── At-a-glance hero ── */
+function renderGlance(items) {
+    var scope = currentView === 'day' ? 'Today' : currentView === 'month' ? 'This Month' : 'This Week';
+    document.getElementById('glanceLabelEvents').textContent = scope;
+
+    var guests = 0, booked = 0, bookedCount = 0, definite = 0, tentative = 0, prospect = 0;
+    var roomCounts = {};
+    items.forEach(function(it) {
+        guests += it.guest_count || 0;
+        if (it.grand_total != null && !isNaN(it.grand_total)) {
+            booked += it.grand_total; bookedCount++;
+        }
+        if (it.status === 'definite') definite++;
+        else if (it.status === 'tentative') tentative++;
+        else if (it.status === 'prospect') prospect++;
+        if (it.room) {
+            var keys = it.room.split(',').map(function(r){return r.trim();}).filter(Boolean);
+            keys.forEach(function(r){ roomCounts[r] = (roomCounts[r]||0) + 1; });
+        }
+    });
+
+    var statusBits = [];
+    if (definite)  statusBits.push(definite + ' definite');
+    if (tentative) statusBits.push(tentative + ' tentative');
+    if (prospect)  statusBits.push(prospect + ' prospect');
+
+    document.getElementById('glanceEvents').textContent = items.length;
+    document.getElementById('glanceEventsSub').textContent = statusBits.join(' · ') || '—';
+
+    document.getElementById('glanceGuests').textContent = guests.toLocaleString('en-US');
+    document.getElementById('glanceGuestsSub').textContent =
+        items.length ? Math.round(guests / Math.max(items.length, 1)) + ' avg' : '—';
+
+    document.getElementById('glanceRevenue').textContent = booked > 0 ? fmtMoneyCompact(booked) : '—';
+    document.getElementById('glanceRevenueSub').textContent =
+        bookedCount > 0 ? bookedCount + ' event' + (bookedCount === 1 ? '' : 's') + ' with totals' : 'awaiting totals';
+
+    var topRoomEntry = Object.keys(roomCounts).map(function(k){return [k, roomCounts[k]];})
+        .sort(function(a, b){ return b[1] - a[1]; })[0];
+    document.getElementById('glanceTopRoom').textContent = topRoomEntry ? topRoomEntry[0] : '—';
+    document.getElementById('glanceTopRoomSub').textContent =
+        topRoomEntry ? topRoomEntry[1] + ' booking' + (topRoomEntry[1] === 1 ? '' : 's') : '—';
 }
 
 // Keep renderWeek for backwards compat with init
@@ -1568,7 +2027,7 @@ function renderCalendar(items, range) {
                 var te = fmtTime(item.end);
 
                 parts.push(
-                    '<div class="ev', isDC ? ' dc' : '', '">',
+                    '<div class="ev', isDC ? ' dc' : '', '" data-id="', esc(item.id), '" role="button" tabindex="0" aria-label="', esc(item.name), '">',
                     '<div class="ev-top">',
                     '<span class="status-dot ', sc, '"></span>',
                     '<span class="ev-name">', esc(item.name), '</span>',
@@ -1633,7 +2092,7 @@ function renderDayList(items, range) {
                 var te = fmtTime(item.end);
 
                 parts.push(
-                    '<div class="m-ev', isDC ? ' dc' : '', '">',
+                    '<div class="m-ev', isDC ? ' dc' : '', '" data-id="', esc(item.id), '" role="button" tabindex="0" aria-label="', esc(item.name), '">',
                     '<div class="m-ev-dot ', sc, '"></div>',
                     '<div class="m-ev-content">',
                     '<div class="m-ev-name">', esc(item.name), '</div>',
@@ -1695,7 +2154,7 @@ function renderMonth(allFilteredItems, range) {
             for (var j = 0; j < show; j++) {
                 var item = dayEvents[j];
                 var isDC = item.locKey === 'dc';
-                parts.push('<div class="mg-ev' + (isDC ? ' dc' : '') + '">' + esc(item.name) + '</div>');
+                parts.push('<div class="mg-ev' + (isDC ? ' dc' : '') + '" data-id="' + esc(item.id) + '" onclick="event.stopPropagation();openDrawer(\'' + esc(item.id) + '\')" role="button" tabindex="0">' + esc(item.name) + '</div>');
             }
             if (dayEvents.length > 3) {
                 parts.push('<div style="font-size:10px;color:var(--text-tertiary);padding:2px 4px">+' + (dayEvents.length - 3) + ' more</div>');
@@ -1741,7 +2200,7 @@ function renderDayView(items, range) {
         var te = fmtTime(item.end);
 
         parts.push(
-            '<div class="dv-event' + (isDC ? ' dc' : '') + '">',
+            '<div class="dv-event' + (isDC ? ' dc' : '') + '" data-id="' + esc(item.id) + '" role="button" tabindex="0" aria-label="' + esc(item.name) + '">',
             '<div class="dv-time">' + (te ? ts + ' \u2013 ' + te : ts) + '</div>',
             '<div class="dv-info">',
             '<div class="dv-name">' + esc(item.name) + '</div>',
@@ -1805,7 +2264,7 @@ function renderUpcomingCards(items) {
         var sc = item.status.replace(/\s+/g, "-");
         var ts = fmtTime(item.start);
         var te = fmtTime(item.end);
-        return '<div class="uc-card">' +
+        return '<div class="uc-card" data-id="' + esc(item.id) + '" role="button" tabindex="0" aria-label="' + esc(item.name) + '">' +
             '<div class="uc-card-top">' +
             '<span class="uc-name">' + esc(item.name) + '</span>' +
             '<span class="uc-date">' + fmtDate(item.start) + '</span>' +
@@ -1854,9 +2313,290 @@ document.getElementById("roomFilter").addEventListener("change", function() {
     activeRoomFilter = this.value; render();
 });
 
+/* ── Search ── */
+var searchInput = document.getElementById('searchInput');
+var searchClear = document.getElementById('searchClear');
+var searchWrap = document.getElementById('searchWrap');
+var _searchDebounce = null;
+searchInput.addEventListener('input', function() {
+    var val = searchInput.value;
+    searchWrap.classList.toggle('has-value', !!val);
+    clearTimeout(_searchDebounce);
+    _searchDebounce = setTimeout(function() {
+        searchQuery = val;
+        render();
+    }, 120);
+});
+searchClear.addEventListener('click', function() {
+    searchInput.value = '';
+    searchWrap.classList.remove('has-value');
+    searchQuery = '';
+    render();
+    searchInput.focus();
+});
+
+/* ── Drawer ── */
+var drawer = document.getElementById('drawer');
+var drawerBackdrop = document.getElementById('drawerBackdrop');
+var drawerBody = document.getElementById('drawerBody');
+var drawerTitle = document.getElementById('drawerTitle');
+var drawerClose = document.getElementById('drawerClose');
+var drawerIcs = document.getElementById('drawerIcs');
+var drawerShare = document.getElementById('drawerShare');
+var currentDrawerId = null;
+var drawerLastTrigger = null;
+
+function openDrawer(id, triggerEl) {
+    var item = itemsById[id];
+    if (!item) return;
+    currentDrawerId = id;
+    drawerLastTrigger = triggerEl || document.activeElement;
+
+    drawerTitle.textContent = item.name || 'Event';
+    drawerBody.innerHTML = buildDrawerHTML(item);
+
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    drawerBackdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(function() { drawerClose.focus(); }, 80);
+
+    try {
+        var url = new URL(window.location.href);
+        url.searchParams.set('event', id);
+        history.replaceState(null, '', url);
+    } catch (e) {}
+}
+
+function closeDrawer() {
+    if (!drawer.classList.contains('open')) return;
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    drawerBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+    currentDrawerId = null;
+    try {
+        var url = new URL(window.location.href);
+        url.searchParams.delete('event');
+        history.replaceState(null, '', url);
+    } catch (e) {}
+    if (drawerLastTrigger && drawerLastTrigger.focus) drawerLastTrigger.focus();
+}
+
+function openDrawerFromUrl() {
+    try {
+        var id = new URL(window.location.href).searchParams.get('event');
+        if (id && itemsById[id]) openDrawer(id);
+    } catch (e) {}
+}
+
+function buildDrawerHTML(item) {
+    var sc = (item.status || '').replace(/\s+/g, '-');
+    var locLabel = item.locKey === 'dc' ? 'DC' : 'NYC';
+    var parts = [];
+
+    parts.push('<div class="dr-tags">');
+    parts.push('<span class="tag ' + item.locKey + '">' + esc(locLabel) + '</span>');
+    if (item.status) parts.push('<span class="tag ' + sc + '">' + esc(item.status) + '</span>');
+    if (item.eventStyle) parts.push('<span class="tag closed">' + esc(item.eventStyle) + '</span>');
+    parts.push('</div>');
+
+    // When & where
+    parts.push('<div class="dr-section"><div class="dr-section-title">When &amp; Where</div>');
+    var dateStr = item.start ? new Date(item.start).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '—';
+    parts.push('<div class="dr-row"><span class="dr-label">Date</span><span class="dr-val">' + esc(dateStr) + '</span></div>');
+    var timeStr = item.start ? fmtTime(item.start) + (item.end ? ' – ' + fmtTime(item.end) : '') : '—';
+    parts.push('<div class="dr-row"><span class="dr-label">Time</span><span class="dr-val mono">' + esc(timeStr) + '</span></div>');
+    parts.push('<div class="dr-row"><span class="dr-label">Venue</span><span class="dr-val">' + esc(item.location || '—') + '</span></div>');
+    if (item.room) parts.push('<div class="dr-row"><span class="dr-label">Room</span><span class="dr-val">' + esc(item.room) + '</span></div>');
+    parts.push('</div>');
+
+    // Contact & guests
+    parts.push('<div class="dr-section"><div class="dr-section-title">Booking</div>');
+    parts.push('<div class="dr-row"><span class="dr-label">Contact</span><span class="dr-val">' + esc(item.contact || '—') + '</span></div>');
+    parts.push('<div class="dr-row"><span class="dr-label">Guests</span><span class="dr-val mono">' + (item.guest_count ? item.guest_count.toLocaleString('en-US') : '—') + '</span></div>');
+    if (item.type) parts.push('<div class="dr-row"><span class="dr-label">Type</span><span class="dr-val">' + esc(item.type) + '</span></div>');
+    parts.push('</div>');
+
+    // Financials
+    var moneyFields = [
+        { key: 'fb_min',      label: 'F&B Minimum',  cls: 'money-dim' },
+        { key: 'grand_total', label: 'Grand Total',  cls: 'money' },
+        { key: 'deposit',     label: 'Deposit Paid', cls: 'money-dim' },
+        { key: 'amount_due',  label: 'Balance Due',  cls: 'money-dim' },
+        { key: 'actual',      label: 'Actual Revenue', cls: 'money' }
+    ];
+    var hasMoney = moneyFields.some(function(f) { return item[f.key] != null; });
+    parts.push('<div class="dr-section"><div class="dr-section-title">Financials</div>');
+    if (hasMoney) {
+        moneyFields.forEach(function(f) {
+            if (item[f.key] == null) return;
+            parts.push(
+                '<div class="dr-row"><span class="dr-label">' + f.label +
+                '</span><span class="dr-val mono ' + f.cls + '">' + esc(fmtMoney(item[f.key])) + '</span></div>'
+            );
+        });
+    } else {
+        parts.push('<div class="dr-empty">No financials recorded yet</div>');
+    }
+    parts.push('</div>');
+
+    return parts.join('');
+}
+
+function buildIcs(item) {
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function toIcs(iso) {
+        if (!iso) return '';
+        var d = new Date(iso);
+        return d.getUTCFullYear() + pad(d.getUTCMonth()+1) + pad(d.getUTCDate()) +
+            'T' + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds()) + 'Z';
+    }
+    var dtstart = toIcs(item.start);
+    var dtend = toIcs(item.end || item.start);
+    var desc = [];
+    if (item.contact) desc.push('Contact: ' + item.contact);
+    if (item.guest_count) desc.push('Guests: ' + item.guest_count);
+    if (item.status) desc.push('Status: ' + item.status);
+    var lines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//PubKey Events//Calendar//EN',
+        'BEGIN:VEVENT',
+        'UID:pubkey-' + item.id + '@calendar.pubkey.com',
+        'DTSTAMP:' + toIcs(new Date().toISOString()),
+        'DTSTART:' + dtstart,
+        'DTEND:' + dtend,
+        'SUMMARY:' + (item.name || 'Event').replace(/[,;]/g, ' '),
+        'LOCATION:' + [item.location, item.room].filter(Boolean).join(' — ').replace(/[,;]/g, ' '),
+        'DESCRIPTION:' + desc.join(' | ').replace(/[,;]/g, ' '),
+        'END:VEVENT',
+        'END:VCALENDAR'
+    ];
+    return lines.join('\r\n');
+}
+
+drawerClose.addEventListener('click', closeDrawer);
+drawerBackdrop.addEventListener('click', closeDrawer);
+
+drawerIcs.addEventListener('click', function() {
+    if (!currentDrawerId) return;
+    var item = itemsById[currentDrawerId];
+    var blob = new Blob([buildIcs(item)], { type: 'text/calendar' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (item.name || 'event').replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 2000);
+});
+
+drawerShare.addEventListener('click', function() {
+    if (!currentDrawerId) return;
+    try {
+        var url = new URL(window.location.href);
+        url.searchParams.set('event', currentDrawerId);
+        var str = url.toString();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(str);
+        }
+        var orig = drawerShare.textContent;
+        drawerShare.textContent = 'Copied!';
+        setTimeout(function() { drawerShare.textContent = orig; }, 1400);
+    } catch (e) {}
+});
+
+/* Delegated click/keydown for all event cards */
+document.addEventListener('click', function(e) {
+    var target = e.target.closest('[data-id]');
+    if (!target) return;
+    var id = target.getAttribute('data-id');
+    if (!id || !itemsById[id]) return;
+    e.preventDefault();
+    openDrawer(id, target);
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var target = e.target;
+    if (!target || !target.hasAttribute || !target.hasAttribute('data-id')) return;
+    var id = target.getAttribute('data-id');
+    if (!id || !itemsById[id]) return;
+    e.preventDefault();
+    openDrawer(id, target);
+});
+
+/* ── URL State ── */
+function persistUrlState() {
+    try {
+        var url = new URL(window.location.href);
+        if (currentView !== 'day') url.searchParams.set('v', currentView); else url.searchParams.delete('v');
+        var off = currentView === 'week' ? weekOffset : currentView === 'month' ? monthOffset : dayOffset;
+        if (off) url.searchParams.set('o', String(off)); else url.searchParams.delete('o');
+        if (searchQuery) url.searchParams.set('q', searchQuery); else url.searchParams.delete('q');
+        if (activeLocationFilter !== 'all') url.searchParams.set('loc', activeLocationFilter); else url.searchParams.delete('loc');
+        if (activeStatusFilter !== 'all') url.searchParams.set('s', activeStatusFilter); else url.searchParams.delete('s');
+        history.replaceState(null, '', url);
+    } catch (e) {}
+}
+
+function applyUrlState() {
+    try {
+        var p = new URL(window.location.href).searchParams;
+        var v = p.get('v'); if (v === 'week' || v === 'month' || v === 'day') currentView = v;
+        var o = parseInt(p.get('o'), 10);
+        if (!isNaN(o)) {
+            if (currentView === 'week') weekOffset = o;
+            else if (currentView === 'month') monthOffset = o;
+            else dayOffset = o;
+        }
+        var q = p.get('q'); if (q) { searchQuery = q; searchInput.value = q; searchWrap.classList.add('has-value'); }
+        var loc = p.get('loc');
+        if (loc === 'nyc' || loc === 'dc') {
+            activeLocationFilter = loc;
+            document.getElementById('locationFilter').value = loc;
+        }
+        var s = p.get('s');
+        if (s && s !== 'all') {
+            activeStatusFilter = s;
+            document.getElementById('statusFilter').value = s;
+        }
+        document.querySelectorAll('.view-btn').forEach(function(btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-view') === currentView);
+        });
+        var showRooms = currentView === 'week' ? '' : 'none';
+        document.getElementById('roomsSection').style.display = showRooms;
+        document.getElementById('roomsGrid').style.display = showRooms;
+    } catch (e) {}
+}
+
 /* ── Keyboard ── */
 document.addEventListener("keydown", function(e) {
-    if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+    // Esc always closes drawer
+    if (e.key === "Escape") {
+        if (drawer.classList.contains('open')) { closeDrawer(); return; }
+        if (document.activeElement === searchInput && searchInput.value) {
+            searchInput.value = '';
+            searchWrap.classList.remove('has-value');
+            searchQuery = '';
+            render();
+            return;
+        }
+    }
+
+    var inForm = e.target.tagName === "SELECT" || e.target.tagName === "INPUT";
+
+    // "/" focuses search from anywhere (unless already typing)
+    if ((e.key === "/" || e.key === "s") && !inForm && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+        return;
+    }
+    if (inForm) return;
+    if (drawer.classList.contains('open')) return;
+
     if (e.key === "ArrowLeft") { navigate(-1); e.preventDefault(); }
     else if (e.key === "ArrowRight") { navigate(1); e.preventDefault(); }
     else if (e.key === "t" || e.key === "T") { navigate(0); }
