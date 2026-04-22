@@ -107,6 +107,23 @@ def load_csv_events():
 
 # ── Tripleseat live ────────────────────────────────────────
 
+def _as_str(v):
+    """Coerce Tripleseat values to a plain string. Unwraps {name|title|value} dicts."""
+    if v is None:
+        return ""
+    if isinstance(v, str):
+        return v
+    if isinstance(v, dict):
+        for k in ("name", "title", "label", "value"):
+            inner = v.get(k)
+            if isinstance(inner, str) and inner:
+                return inner
+        return ""
+    if isinstance(v, (list, tuple)):
+        return ", ".join(_as_str(x) for x in v if x)
+    return str(v)
+
+
 def _ts_iso(v):
     """Normalize Tripleseat date/time payloads to 'YYYY-MM-DDTHH:MM:SS'."""
     if not v:
@@ -125,25 +142,35 @@ def _ts_iso(v):
     return s  # last resort — pass through
 
 
+def _ts_contact(raw):
+    """Extract a contact display name from Tripleseat-shaped contact blobs."""
+    c = raw.get("contact") or raw.get("booking_contact") or raw.get("lead_contact") or {}
+    if isinstance(c, dict):
+        first = _as_str(c.get("first_name"))
+        last  = _as_str(c.get("last_name"))
+        joined = (first + " " + last).strip()
+        return joined or _as_str(c.get("name")) or _as_str(c.get("full_name")) or ""
+    return _as_str(c)
+
+
 def _ts_map_event(raw, eid):
-    """Map a Tripleseat event dict to our normalized shape."""
-    location = (raw.get("site_name")
-                or raw.get("location_name")
-                or raw.get("location", ""))
-    # Rooms may come as list of dicts or comma string
-    rooms = raw.get("rooms") or raw.get("room") or ""
-    if isinstance(rooms, list):
-        rooms = ", ".join(r.get("name", "") if isinstance(r, dict) else str(r)
-                          for r in rooms if r)
-    contact_raw = raw.get("contact") or raw.get("booking_contact") or {}
-    if isinstance(contact_raw, dict):
-        contact = ((contact_raw.get("first_name", "") + " " +
-                    contact_raw.get("last_name", "")).strip()
-                   or contact_raw.get("name", ""))
-    else:
-        contact = str(contact_raw or "")
-    status = (raw.get("status") or raw.get("event_status") or "").lower()
+    """Map a Tripleseat event dict to our normalized shape.
+    Defensive — Tripleseat returns many fields as nested dicts or lists."""
+    location = _as_str(raw.get("site_name")) \
+        or _as_str(raw.get("location_name")) \
+        or _as_str(raw.get("site")) \
+        or _as_str(raw.get("location"))
+
+    rooms = _as_str(raw.get("rooms")) or _as_str(raw.get("room"))
+    contact = _ts_contact(raw)
+    status = _as_str(raw.get("status") or raw.get("event_status")).lower()
+    event_type = _as_str(raw.get("event_type") or raw.get("type") or "event").lower() or "event"
+    event_style = _as_str(raw.get("event_style") or raw.get("style"))
+    name = _as_str(raw.get("name") or raw.get("title")) or "Untitled"
+
     guest_count = raw.get("guest_count") or raw.get("guests") or 0
+    if isinstance(guest_count, dict):
+        guest_count = guest_count.get("count") or guest_count.get("value") or 0
     try:
         guest_count = int(guest_count)
     except (TypeError, ValueError):
@@ -152,8 +179,8 @@ def _ts_map_event(raw, eid):
     return {
         "id": raw.get("id", eid),
         "source": "tripleseat",
-        "type": (raw.get("event_type", "") or "event").lower() or "event",
-        "name": raw.get("name") or raw.get("title") or "Untitled",
+        "type": event_type,
+        "name": name,
         "status": status,
         "start": _ts_iso(raw.get("event_start") or raw.get("start_time") or raw.get("start_date")),
         "end":   _ts_iso(raw.get("event_end")   or raw.get("end_time")   or raw.get("end_date")),
@@ -162,8 +189,8 @@ def _ts_map_event(raw, eid):
         "room": rooms,
         "contact": contact,
         "guest_count": guest_count,
-        "event_style": raw.get("event_style", "") or raw.get("style", ""),
-        "fb_min":      _parse_money(raw.get("food_beverage_minimum")),
+        "event_style": event_style,
+        "fb_min":      _parse_money(raw.get("food_beverage_minimum") or raw.get("fb_min")),
         "grand_total": _parse_money(raw.get("grand_total") or raw.get("total")),
         "deposit":     _parse_money(raw.get("deposit")),
         "amount_due":  _parse_money(raw.get("amount_due") or raw.get("balance_due")),
@@ -194,8 +221,20 @@ def load_tripleseat_events(start: str, end: str):
             params["end_date"] = end
         raw_events = client.search_events(**params) if params else client.get_events()
 
-        items = [_ts_map_event(r, idx + 1) for idx, r in enumerate(raw_events or [])]
-        items = [i for i in items if i["start"]]
+        items = []
+        skipped = 0
+        for idx, r in enumerate(raw_events or []):
+            try:
+                mapped = _ts_map_event(r, idx + 1)
+                if mapped["start"]:
+                    items.append(mapped)
+                else:
+                    skipped += 1
+            except Exception as e:
+                logger.warning("Skipping Tripleseat record %s: %s", idx, e)
+                skipped += 1
+        if skipped:
+            logger.info("Mapped %d events, skipped %d malformed", len(items), skipped)
         return items, None
     except Exception as e:
         logger.exception("Tripleseat fetch failed")
