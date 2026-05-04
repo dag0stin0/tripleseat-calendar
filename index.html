@@ -1569,13 +1569,6 @@ select.filter-btn {
             </div>
         </div>
         <div class="glance-cell">
-            <div class="glance-label">Booked Revenue</div>
-            <div>
-                <div class="glance-value money" id="glanceRevenue">&mdash;</div>
-                <div class="glance-sub" id="glanceRevenueSub">&nbsp;</div>
-            </div>
-        </div>
-        <div class="glance-cell">
             <div class="glance-label">Top Room</div>
             <div>
                 <div class="glance-value small" id="glanceTopRoom">&mdash;</div>
@@ -1900,13 +1893,10 @@ function renderGlance(items) {
     var scope = currentView === 'day' ? 'Today' : currentView === 'month' ? 'This Month' : 'This Week';
     document.getElementById('glanceLabelEvents').textContent = scope;
 
-    var guests = 0, booked = 0, bookedCount = 0, definite = 0, tentative = 0, prospect = 0;
+    var guests = 0, definite = 0, tentative = 0, prospect = 0;
     var roomCounts = {};
     items.forEach(function(it) {
         guests += it.guest_count || 0;
-        if (it.grand_total != null && !isNaN(it.grand_total)) {
-            booked += it.grand_total; bookedCount++;
-        }
         if (it.status === 'definite') definite++;
         else if (it.status === 'tentative') tentative++;
         else if (it.status === 'prospect') prospect++;
@@ -1927,10 +1917,6 @@ function renderGlance(items) {
     document.getElementById('glanceGuests').textContent = guests.toLocaleString('en-US');
     document.getElementById('glanceGuestsSub').textContent =
         items.length ? Math.round(guests / Math.max(items.length, 1)) + ' avg' : '—';
-
-    document.getElementById('glanceRevenue').textContent = booked > 0 ? fmtMoneyCompact(booked) : '—';
-    document.getElementById('glanceRevenueSub').textContent =
-        bookedCount > 0 ? bookedCount + ' event' + (bookedCount === 1 ? '' : 's') + ' with totals' : 'awaiting totals';
 
     var topRoomEntry = Object.keys(roomCounts).map(function(k){return [k, roomCounts[k]];})
         .sort(function(a, b){ return b[1] - a[1]; })[0];
