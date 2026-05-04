@@ -1,3 +1,17 @@
 {
-  "framework": null
+  "framework": null,
+  "functions": {
+    "api/cron/sync.py": {
+      "maxDuration": 300
+    },
+    "api/events.py": {
+      "maxDuration": 10
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/sync",
+      "schedule": "0 5 * * *"
+    }
+  ]
 }
