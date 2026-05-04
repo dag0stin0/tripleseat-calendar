@@ -1922,9 +1922,6 @@ function buildTooltipHTML(item) {
     if (item.room) {
         parts.push('<div class="tt-row"><span class="tt-label">Room</span><span class="tt-val">' + esc(item.room) + '</span></div>');
     }
-    if (item.status) {
-        parts.push('<div class="tt-row"><span class="tt-label">Status</span><span class="tt-val">' + esc(item.status) + '</span></div>');
-    }
     if (item.contact) {
         parts.push('<div class="tt-row"><span class="tt-label">Contact</span><span class="tt-val">' + esc(item.contact) + '</span></div>');
     }
@@ -1987,14 +1984,12 @@ function renderCalendar(items, range) {
             for (var j = 0; j < dayItems.length; j++) {
                 var item = dayItems[j];
                 var isDC = item.locKey === 'dc';
-                var sc = item.status.replace(/\s+/g, "-");
                 var ts = fmtTime(item.start);
                 var te = fmtTime(item.end);
 
                 parts.push(
                     '<div class="ev', isDC ? ' dc' : '', '" data-id="', esc(item.id), '" role="button" tabindex="0" aria-label="', esc(item.name), '">',
                     '<div class="ev-top">',
-                    '<span class="status-dot ', sc, '"></span>',
                     '<span class="ev-name">', esc(item.name), '</span>',
                     '</div>',
                     '<div class="ev-time">', te ? ts + ' \u2013 ' + te : ts, '</div>'
@@ -2052,13 +2047,11 @@ function renderDayList(items, range) {
             for (var j = 0; j < dayItems.length; j++) {
                 var item = dayItems[j];
                 var isDC = item.locKey === 'dc';
-                var sc = item.status.replace(/\s+/g, "-");
                 var ts = fmtTime(item.start);
                 var te = fmtTime(item.end);
 
                 parts.push(
                     '<div class="m-ev', isDC ? ' dc' : '', '" data-id="', esc(item.id), '" role="button" tabindex="0" aria-label="', esc(item.name), '">',
-                    '<div class="m-ev-dot ', sc, '"></div>',
                     '<div class="m-ev-content">',
                     '<div class="m-ev-name">', esc(item.name), '</div>',
                     '<div class="m-ev-meta">',
@@ -2160,7 +2153,6 @@ function renderDayView(items, range) {
     for (var i = 0; i < sorted.length; i++) {
         var item = sorted[i];
         var isDC = item.locKey === 'dc';
-        var sc = item.status.replace(/\s+/g, "-");
         var ts = fmtTime(item.start);
         var te = fmtTime(item.end);
 
@@ -2172,10 +2164,8 @@ function renderDayView(items, range) {
             '<div class="dv-meta">'
         );
         if (item.room) parts.push('<span>\uD83D\uDCCD ' + esc(item.room) + '</span>');
-        if (item.status) parts.push('<span><span class="status-dot ' + sc + '"></span> ' + esc(item.status) + '</span>');
         if (item.locKey) parts.push('<span class="tag ' + item.locKey + '">' + (item.locKey === 'dc' ? 'DC' : 'NYC') + '</span>');
         if (item.contact) parts.push('<span>' + esc(item.contact) + '</span>');
-        if (item.guest_count) parts.push('<span>' + item.guest_count + ' guests</span>');
         parts.push('</div></div></div>');
     }
     parts.push('</div>');
@@ -2199,12 +2189,10 @@ function renderUpcoming(items) {
         return;
     }
     tbody.innerHTML = upcoming.map(function(item) {
-        var sc = item.status.replace(/\s+/g, "-");
         return '<tr>' +
             '<td>' + fmtDate(item.start) + '</td>' +
             '<td class="time-cell">' + fmtTime(item.start) + (item.end ? ' \u2013 ' + fmtTime(item.end) : '') + '</td>' +
             '<td class="name-cell">' + esc(item.name) + '</td>' +
-            '<td><span class="tag ' + sc + '">' + esc(item.status) + '</span></td>' +
             '<td><span class="tag ' + item.locKey + '">' + (item.locKey === 'dc' ? 'DC' : 'NYC') + '</span></td>' +
             '<td>' + esc(item.room || '\u2014') + '</td>' +
             '<td>' + esc(item.contact || '\u2014') + '</td>' +
@@ -2226,7 +2214,6 @@ function renderUpcomingCards(items) {
         return;
     }
     container.innerHTML = upcoming.map(function(item) {
-        var sc = item.status.replace(/\s+/g, "-");
         var ts = fmtTime(item.start);
         var te = fmtTime(item.end);
         return '<div class="uc-card" data-id="' + esc(item.id) + '" role="button" tabindex="0" aria-label="' + esc(item.name) + '">' +
@@ -2237,7 +2224,6 @@ function renderUpcomingCards(items) {
             '<div class="uc-card-bottom">' +
             '<span class="uc-time">' + (te ? ts + ' \u2013 ' + te : ts) + '</span>' +
             '<span class="tag ' + item.locKey + '">' + (item.locKey === 'dc' ? 'DC' : 'NYC') + '</span>' +
-            '<span class="tag ' + sc + '">' + esc(item.status) + '</span>' +
             (item.room ? '<span class="m-ev-room">' + esc(item.room) + '</span>' : '') +
             '</div>' +
             '</div>';
@@ -2356,13 +2342,11 @@ function openDrawerFromUrl() {
 }
 
 function buildDrawerHTML(item) {
-    var sc = (item.status || '').replace(/\s+/g, '-');
     var locLabel = item.locKey === 'dc' ? 'DC' : 'NYC';
     var parts = [];
 
     parts.push('<div class="dr-tags">');
     parts.push('<span class="tag ' + item.locKey + '">' + esc(locLabel) + '</span>');
-    if (item.status) parts.push('<span class="tag ' + sc + '">' + esc(item.status) + '</span>');
     if (item.eventStyle) parts.push('<span class="tag closed">' + esc(item.eventStyle) + '</span>');
     parts.push('</div>');
 
