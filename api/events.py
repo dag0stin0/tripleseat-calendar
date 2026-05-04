@@ -100,34 +100,34 @@ def load_csv_events():
     return items
 
 
-def _blob_public_url():
-    """Construct the public Blob URL from the read-write token.
+def load_blob_snapshot():
+    """List blobs at the snapshot prefix, fetch the most recent one.
 
-    BLOB_READ_WRITE_TOKEN format: vercel_blob_rw_<storeId>_<secret>
-    Public URL pattern: https://<storeId>.public.blob.vercel-storage.com/<path>
+    Vercel Blob appends a random suffix to uploaded paths, so we can't
+    construct a deterministic URL — list and pick the newest instead.
+
+    Returns (items, fetched_at, error).
     """
     token = os.environ.get("BLOB_READ_WRITE_TOKEN")
     if not token:
-        return None
-    parts = token.split("_")
-    if len(parts) < 5:
-        return None
-    store_id = parts[3].lower()
-    return f"https://{store_id}.public.blob.vercel-storage.com/{SNAPSHOT_PATH}"
-
-
-def load_blob_snapshot():
-    """Returns (items, fetched_at, error)."""
-    url = _blob_public_url()
-    if not url:
         return [], None, "no_blob_token"
     try:
-        r = requests.get(url, timeout=SNAPSHOT_TIMEOUT)
-        if r.status_code == 404:
+        list_resp = requests.get(
+            "https://blob.vercel-storage.com",
+            params={"prefix": SNAPSHOT_PATH.rsplit(".", 1)[0], "limit": "100"},
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=SNAPSHOT_TIMEOUT,
+        )
+        list_resp.raise_for_status()
+        blobs = list_resp.json().get("blobs", [])
+        if not blobs:
             return [], None, "snapshot_not_found"
-        r.raise_for_status()
-        payload = r.json()
-        return payload.get("items", []), payload.get("fetched_at"), None
+
+        latest = max(blobs, key=lambda b: b.get("uploadedAt", ""))
+        data_resp = requests.get(latest["url"], timeout=SNAPSHOT_TIMEOUT)
+        data_resp.raise_for_status()
+        payload = data_resp.json()
+        return payload.get("items", []), payload.get("uploadedAt") or latest.get("uploadedAt"), None
     except Exception as e:
         logger.exception("blob fetch failed")
         return [], None, f"blob_fetch_failed: {e}"

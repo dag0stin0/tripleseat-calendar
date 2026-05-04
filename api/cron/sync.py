@@ -209,19 +209,22 @@ def fetch_tripleseat_snapshot():
 
 
 def upload_to_blob(payload):
-    """PUT the snapshot to Vercel Blob, overwriting the prior version.
+    """PUT the snapshot to Vercel Blob, then delete prior versions.
 
-    Returns the public URL of the uploaded object.
+    Vercel Blob always appends a random suffix to uploaded paths
+    (the addRandomSuffix=false / allowOverwrite options aren't honored
+    over the raw HTTP API), so we instead let it create a new file each
+    run and prune older versions at the same prefix.
+
+    Returns the public URL of the new object.
     """
     token = os.environ.get("BLOB_READ_WRITE_TOKEN")
     if not token:
         raise RuntimeError("BLOB_READ_WRITE_TOKEN env var not set")
 
     body = json.dumps(payload, default=str).encode("utf-8")
-    url = f"https://blob.vercel-storage.com/{SNAPSHOT_PATH}"
-    response = requests.put(
-        url,
-        params={"addRandomSuffix": "false", "allowOverwrite": "true"},
+    put = requests.put(
+        f"https://blob.vercel-storage.com/{SNAPSHOT_PATH}",
         headers={
             "Authorization": f"Bearer {token}",
             "x-content-type": "application/json",
@@ -230,8 +233,35 @@ def upload_to_blob(payload):
         data=body,
         timeout=30,
     )
-    response.raise_for_status()
-    return response.json().get("url", "")
+    put.raise_for_status()
+    new_url = put.json().get("url", "")
+
+    _prune_old_snapshots(token, keep_url=new_url)
+    return new_url
+
+
+def _prune_old_snapshots(token, keep_url):
+    """Delete every blob at the snapshot prefix except the one we just wrote."""
+    try:
+        prefix = SNAPSHOT_PATH.rsplit(".", 1)[0]
+        listing = requests.get(
+            "https://blob.vercel-storage.com",
+            params={"prefix": prefix, "limit": "100"},
+            headers={"Authorization": f"Bearer {token}"},
+            timeout=10,
+        )
+        listing.raise_for_status()
+        stale = [b["url"] for b in listing.json().get("blobs", []) if b.get("url") and b["url"] != keep_url]
+        if not stale:
+            return
+        requests.post(
+            "https://blob.vercel-storage.com/delete",
+            headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
+            json={"urls": stale},
+            timeout=15,
+        )
+    except Exception as e:
+        logger.warning("prune failed (non-fatal): %s", e)
 
 
 class handler(BaseHTTPRequestHandler):
