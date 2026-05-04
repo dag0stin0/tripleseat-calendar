@@ -1562,13 +1562,6 @@ select.filter-btn {
             </div>
         </div>
         <div class="glance-cell">
-            <div class="glance-label">Guests</div>
-            <div>
-                <div class="glance-value" id="glanceGuests">&mdash;</div>
-                <div class="glance-sub" id="glanceGuestsSub">&nbsp;</div>
-            </div>
-        </div>
-        <div class="glance-cell">
             <div class="glance-label">Top Room</div>
             <div>
                 <div class="glance-value small" id="glanceTopRoom">&mdash;</div>
@@ -1893,30 +1886,16 @@ function renderGlance(items) {
     var scope = currentView === 'day' ? 'Today' : currentView === 'month' ? 'This Month' : 'This Week';
     document.getElementById('glanceLabelEvents').textContent = scope;
 
-    var guests = 0, definite = 0, tentative = 0, prospect = 0;
     var roomCounts = {};
     items.forEach(function(it) {
-        guests += it.guest_count || 0;
-        if (it.status === 'definite') definite++;
-        else if (it.status === 'tentative') tentative++;
-        else if (it.status === 'prospect') prospect++;
         if (it.room) {
             var keys = it.room.split(',').map(function(r){return r.trim();}).filter(Boolean);
             keys.forEach(function(r){ roomCounts[r] = (roomCounts[r]||0) + 1; });
         }
     });
 
-    var statusBits = [];
-    if (definite)  statusBits.push(definite + ' definite');
-    if (tentative) statusBits.push(tentative + ' tentative');
-    if (prospect)  statusBits.push(prospect + ' prospect');
-
     document.getElementById('glanceEvents').textContent = items.length;
-    document.getElementById('glanceEventsSub').textContent = statusBits.join(' · ') || '—';
-
-    document.getElementById('glanceGuests').textContent = guests.toLocaleString('en-US');
-    document.getElementById('glanceGuestsSub').textContent =
-        items.length ? Math.round(guests / Math.max(items.length, 1)) + ' avg' : '—';
+    document.getElementById('glanceEventsSub').textContent = ' ';
 
     var topRoomEntry = Object.keys(roomCounts).map(function(k){return [k, roomCounts[k]];})
         .sort(function(a, b){ return b[1] - a[1]; })[0];
