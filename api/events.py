@@ -28,6 +28,10 @@ DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 SNAPSHOT_PATH = "tripleseat/events.json"
 SNAPSHOT_TIMEOUT = 8
 
+HIDDEN_INSTANCES = {
+    ("nyc trivia league", "2026-06-02"),
+}
+
 
 def _parse_money(v):
     if v is None:
@@ -177,6 +181,10 @@ class handler(BaseHTTPRequestHandler):
                 return self._send_json(500, {"error": str(e)})
 
         items = [i for i in items if (i.get("status") or "").lower() != "lost"]
+        items = [
+            i for i in items
+            if ((i.get("name") or "").strip().lower(), (i.get("start") or "")[:10]) not in HIDDEN_INSTANCES
+        ]
 
         if start_str and end_str:
             items = [
