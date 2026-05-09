@@ -176,6 +176,8 @@ class handler(BaseHTTPRequestHandler):
                 logger.exception("CSV load failed")
                 return self._send_json(500, {"error": str(e)})
 
+        items = [i for i in items if (i.get("status") or "").lower() != "lost"]
+
         if start_str and end_str:
             items = [
                 i for i in items
